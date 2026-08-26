@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="玛格丽·艾林翰（Margery Allingham）公版小说全收录阅读器 — 28 部作品、章节导航、离线阅读、语音朗读">
+<meta name="theme-color" content="#14231b">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<title>艾林翰书斋 · Margery Allingham Reader</title>
+<style>
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Bold.ttf') format('truetype');font-weight:700;font-display:swap}
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Lora';src:url('./_shared/fonts/Lora-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Lora';src:url('./_shared/fonts/Lora-Bold.ttf') format('truetype');font-weight:700;font-display:swap}
+@font-face{font-family:'Lora';src:url('./_shared/fonts/Lora-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'JBMono';src:url('./_shared/fonts/JetBrainsMono-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+
+:root{
+  --ink:#e9e4d6; --ink-dim:#b9b2a0; --ink-faint:#8a8474;
+  --bg:#14231b; --bg2:#0e1a14; --bg3:#1b2e24; --line:#2d4436;
+  --gold:#d9a862; --gold-soft:#b98c4f; --amber:#e8c07a;
+  --accent:#7fae8e; --danger:#c98163;
+  --paper:#f4eddc; --paper-ink:#2b2a24;
+  --serif:'CrimsonPro',Georgia,serif; --body:'Lora',Georgia,serif; --mono:'JBMono',Consolas,monospace;
+  --fs:19px; --lh:1.85;
+}
+html[data-theme=paper]{--ink:#332f26;--ink-dim:#5b554a;--ink-faint:#857d6d;--bg:#f4eddc;--bg2:#ece2ca;--bg3:#efe7d4;--line:#d8cbaa;--gold:#8a6420;--gold-soft:#a5792f;--amber:#7d5a1a;--accent:#48705a;--paper:#fdfaf2;--paper-ink:#26241e}
+html[data-theme=light]{--ink:#27251f;--ink-dim:#55524a;--ink-faint:#8a8474;--bg:#faf8f3;--bg2:#f1eee5;--bg3:#ffffff;--line:#ddd8c8;--gold:#8a6420;--gold-soft:#a5792f;--amber:#7d5a1a;--accent:#48705a;--paper:#ffffff;--paper-ink:#26241e}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:var(--fs);line-height:var(--lh);-webkit-font-smoothing:antialiased}
+a{color:var(--amber)}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+::selection{background:var(--gold);color:#14231b}
+.hidden{display:none!important}
+
+/* ============ 顶栏 ============ */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;display:flex;align-items:center;gap:14px;padding:0 20px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.brand svg{width:30px;height:30px;flex:none}
+.brand .bt{font-family:var(--serif);font-weight:700;font-size:19px;letter-spacing:.06em;color:var(--amber)}
+.brand .bs{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase}
+.topbar .sp{flex:1}
+.tbtn{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;color:var(--ink-dim);background:var(--bg3);transition:.18s}
+.tbtn:hover{color:var(--amber);border-color:var(--gold-soft)}
+.tbtn.on{color:#14231b;background:var(--gold);border-color:var(--gold);font-weight:700}
+.tbtn svg{width:15px;height:15px}
+
+/* ============ 书架 ============ */
+#view-shelf{padding-top:56px;max-width:1120px;margin:0 auto;padding-left:20px;padding-right:20px}
+.hero{padding:64px 0 40px;text-align:center;position:relative}
+.hero .era{font-family:var(--mono);font-size:11px;letter-spacing:.34em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-family:var(--serif);font-size:clamp(44px,7vw,84px);font-weight:700;letter-spacing:.04em;line-height:1.05;color:var(--ink)}
+.hero h1 .accent{color:var(--amber);font-style:italic}
+.hero .cn{font-family:var(--serif);font-size:clamp(17px,2.4vw,23px);color:var(--ink-dim);margin-top:14px;letter-spacing:.5em;text-indent:.5em}
+.hero .bio{max-width:720px;margin:26px auto 0;font-size:15.5px;line-height:1.95;color:var(--ink-dim);text-align:justify}
+.hero .bio b{color:var(--ink)}
+.stats{display:flex;justify-content:center;gap:0;margin-top:36px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg3);max-width:640px;margin-left:auto;margin-right:auto}
+.stats .st{flex:1;padding:16px 8px;text-align:center}
+.stats .st+.st{border-left:1px solid var(--line)}
+.stats .n{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--amber)}
+.stats .l{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ink-faint);text-transform:uppercase;margin-top:3px}
+
+.guide{margin-top:56px;border:1px solid var(--line);border-radius:18px;background:var(--bg3);overflow:hidden}
+.guide .gh{display:flex;align-items:center;gap:12px;padding:18px 26px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+.guide .gh .t{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--amber)}
+.guide .gh .sub{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--ink-faint);text-transform:uppercase}
+.guide .gh .arr{margin-left:auto;color:var(--ink-faint);transition:.25s;font-size:13px}
+.guide.open .gh .arr{transform:rotate(180deg)}
+.guide .gb{display:none;padding:8px 26px 26px}
+.guide.open .gb{display:block}
+.gpath{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:14px}
+.gcard{border:1px solid var(--line);border-radius:13px;padding:18px 20px;background:var(--bg)}
+.gcard .gt{font-family:var(--serif);font-size:17.5px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.gcard .gd{font-size:13.8px;line-height:1.8;color:var(--ink-dim)}
+.gcard .gd b{color:var(--ink)}
+.gnote{margin-top:18px;font-size:13px;line-height:1.8;color:var(--ink-faint);border-top:1px dashed var(--line);padding-top:14px}
+.gnote b{color:var(--ink-dim)}
+
+/* 中译本情报 */
+.zhl{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:16px}
+.zhc{border:1px solid var(--line);border-radius:13px;padding:17px 19px 15px;background:var(--bg);display:flex;flex-direction:column;gap:8px}
+.zhc.link{cursor:pointer;transition:.2s;text-decoration:none;color:inherit}
+.zhc.link:hover{border-color:var(--gold-soft);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.zhc .zt{font-family:var(--serif);font-size:17.5px;font-weight:700;color:var(--gold);line-height:1.35}
+.zhc .ze{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-faint)}
+.zhc .zm{font-size:13.2px;line-height:1.8;color:var(--ink-dim);flex:1}
+.zhc .zm b{color:var(--ink)}
+.zhc .zl{font-size:12.5px;color:var(--amber);text-decoration:none;align-self:flex-start;border:1px solid var(--line);border-radius:7px;padding:4.5px 11px;transition:.15s;background:var(--bg3)}
+.zhc .zl:hover{border-color:var(--gold-soft)}
+.zhc .badge{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#14231b;background:var(--gold);border-radius:4px;padding:1.5px 7px;font-weight:700;margin-left:8px;vertical-align:2px}
+.zh-note{margin-top:16px;font-size:13px;line-height:1.9;color:var(--ink-faint);border-top:1px dashed var(--line);padding-top:14px}
+.zh-note b{color:var(--ink-dim)}
+
+.era-title{display:flex;align-items:baseline;gap:16px;margin:56px 0 20px}
+.era-title .rn{font-family:var(--serif);font-size:32px;font-weight:700;color:var(--gold);font-style:italic}
+.era-title .rt{font-family:var(--serif);font-size:22px;font-weight:700}
+.era-title .rd{font-size:13px;color:var(--ink-faint);font-family:var(--mono);letter-spacing:.1em}
+.era-title .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.bcard{position:relative;border:1px solid var(--line);border-radius:15px;background:var(--bg3);padding:20px 22px 18px;cursor:pointer;transition:.2s;overflow:hidden;display:flex;flex-direction:column}
+.bcard:hover{border-color:var(--gold-soft);transform:translateY(-3px);box-shadow:0 12px 34px rgba(0,0,0,.28)}
+.bcard .yr{position:absolute;top:14px;right:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--gold-soft);border:1px solid var(--line);border-radius:6px;padding:2.5px 8px;background:var(--bg)}
+.bcard .star{position:absolute;top:13px;right:76px;color:var(--amber);font-size:13px;letter-spacing:1px}
+.bcard .ben{font-family:var(--serif);font-size:20.5px;font-weight:700;line-height:1.28;color:var(--ink);margin-bottom:3px;padding-right:60px}
+.bcard .bzh{font-family:var(--serif);font-size:14.5px;color:var(--amber);margin-bottom:10px;letter-spacing:.12em}
+.bcard .bb{font-size:13.2px;line-height:1.78;color:var(--ink-dim);flex:1}
+.bcard .bf{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.bcard .bf .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-faint);text-transform:uppercase;border:1px solid var(--line);border-radius:5px;padding:2px 7px}
+.bcard .bf .cont{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--gold-soft)}
+.bcard.read::after{content:'读';position:absolute;left:-1px;top:-1px;width:26px;height:26px;background:var(--gold);color:#14231b;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:0 0 8px 0}
+.pbar{height:3px;background:var(--line);border-radius:2px;margin-top:12px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--gold);border-radius:2px}
+
+.foot{margin:70px 0 50px;padding-top:30px;border-top:1px solid var(--line);font-size:12.5px;line-height:2;color:var(--ink-faint);text-align:center}
+.foot b{color:var(--ink-dim)}
+
+/* ============ 阅读器 ============ */
+#view-reader{padding-top:56px;display:none}
+.rtop{position:fixed;top:56px;left:0;right:0;z-index:40;height:48px;display:flex;align-items:center;gap:10px;padding:0 16px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.rtop .bk{font-family:var(--serif);font-size:16.5px;font-weight:700;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
+.rtop .sp{flex:1}
+.chlabel{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:30vw}
+
+#chapters{position:fixed;top:104px;left:0;bottom:0;width:300px;background:var(--bg2);border-right:1px solid var(--line);z-index:35;overflow-y:auto;padding:14px 0 30px;transform:translateX(-100%);transition:.25s}
+#chapters.open{transform:none}
+#chapters .cht{font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--ink-faint);text-transform:uppercase;padding:8px 22px 12px}
+#chapters .ci{display:flex;gap:10px;align-items:baseline;padding:8.5px 22px;cursor:pointer;border-left:2.5px solid transparent;transition:.15s}
+#chapters .ci:hover{background:var(--bg3)}
+#chapters .ci.cur{border-left-color:var(--gold);background:var(--bg3)}
+#chapters .ci .cn{font-family:var(--mono);font-size:10.5px;color:var(--gold-soft);min-width:26px}
+#chapters .ci .ct{font-size:13.8px;color:var(--ink-dim);line-height:1.5}
+#chapters .ci.cur .ct{color:var(--amber);font-weight:700}
+
+#reader-main{margin-left:0;transition:.25s;padding-bottom:80px}
+body.sidebar-open #reader-main{margin-left:300px}
+body.sidebar-open #chapters{transform:none}
+.rwrap{max-width:760px;margin:0 auto;padding:44px 26px 20px}
+.rhead{text-align:center;margin-bottom:44px}
+.rhead .rt{font-family:var(--serif);font-size:34px;font-weight:700;color:var(--amber);line-height:1.25}
+.rhead .rst{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-faint);margin-top:8px}
+.rhead .rule{width:70px;height:1px;background:var(--gold-soft);margin:22px auto 0}
+#content{font-size:var(--fs);line-height:var(--lh)}
+#content p{margin:0 0 1.15em;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+#content p.first::first-letter{}
+#content em{font-style:italic;color:color-mix(in srgb,var(--ink) 88%,var(--gold))}
+#content .scene{margin:1.6em auto;text-align:center;color:var(--gold-soft);letter-spacing:.7em;text-indent:.7em;font-size:13px}
+.rfoot{display:flex;align-items:center;gap:12px;max-width:760px;margin:34px auto 0;padding:16px 26px;border-top:1px solid var(--line)}
+.rfoot .pn{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.1em}
+.rfoot .sp{flex:1}
+.nbtn{padding:8px 18px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;color:var(--ink-dim);background:var(--bg3);transition:.18s}
+.nbtn:hover:not(:disabled){color:var(--amber);border-color:var(--gold-soft)}
+.nbtn:disabled{opacity:.35;cursor:default}
+
+/* TTS 高亮 */
+.tts-on{background:color-mix(in srgb,var(--gold) 30%,transparent);color:var(--ink);border-radius:3px;box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 30%,transparent)}
+body.tts-reading #content p{color:var(--ink-faint)}
+body.tts-reading #content p:has(.tts-on),body.tts-reading #content p.cur{color:var(--ink)}
+
+/* ============ TTS 控制条 ============ */
+#ttsbar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);z-index:60;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--bg3);border:1px solid var(--gold-soft);border-radius:15px;box-shadow:0 16px 44px rgba(0,0,0,.4);transition:.3s;max-width:92vw}
+#ttsbar.show{transform:translate(-50%,0)}
+#ttsbar .tt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--gold-soft);text-transform:uppercase;margin-right:2px}
+#ttsbar .prog{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);min-width:64px;text-align:center}
+#ttsbar select{background:var(--bg);color:var(--ink-dim);border:1px solid var(--line);border-radius:7px;font-size:12px;padding:4px 6px;font-family:var(--mono)}
+.tbtn.mini{padding:6px 10px;font-size:12.5px}
+
+/* ============ 设置 ============ */
+#settings{position:fixed;top:104px;right:20px;z-index:60;width:290px;background:var(--bg3);border:1px solid var(--line);border-radius:15px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.4);display:none}
+#settings.open{display:block}
+#settings .st{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--ink-faint);text-transform:uppercase;margin:16px 0 9px}
+#settings .st:first-child{margin-top:0}
+.segrow{display:flex;gap:8px;align-items:center}
+.chip{flex:1;text-align:center;padding:7px 4px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--ink-dim);transition:.15s}
+.chip:hover{border-color:var(--gold-soft)}
+.chip.on{background:var(--gold);color:#14231b;border-color:var(--gold);font-weight:700}
+.chip .aa{font-family:var(--serif);font-size:15px}
+input[type=range]{width:100%;accent-color:var(--gold)}
+
+/* toast */
+#toast{position:fixed;top:74px;left:50%;transform:translate(-50%,-18px);z-index:99;background:var(--bg3);border:1px solid var(--gold-soft);color:var(--amber);padding:10px 22px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:900px){
+  #chapters{width:min(300px,84vw)}
+  .rtop .bk{max-width:30vw}
+}
+@media(max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .stats{flex-wrap:wrap}.stats .st{min-width:45%}
+  .rwrap{padding:30px 18px 16px}
+  .hero{padding:44px 0 30px}
+  .tbtn .lbl{display:none}
+  body.sidebar-open #reader-main{margin-left:0}
+}
+@media print{.topbar,.rtop,#chapters,.rfoot,#ttsbar,#settings{display:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand" id="brand">
+    <svg viewBox="0 0 32 32" fill="none"><rect x="1.5" y="1.5" width="29" height="29" rx="6" stroke="#d9a862" stroke-width="1.6"/><path d="M9 23.5V9h6.2c3.4 0 5.6 2 5.6 5.1 0 2.4-1.3 4.1-3.5 4.8l4 4.6h-3.6l-3.5-4.2h-2v4.2H9zm3.2-6.9h2.8c1.7 0 2.7-.9 2.7-2.5s-1-2.5-2.7-2.5h-2.8v5z" fill="#d9a862"/><circle cx="24.2" cy="8.6" r="2.6" stroke="#7fae8e" stroke-width="1.4"/></svg>
+    <div><div class="bt">ALLINGHAM</div><div class="bs">书斋 · Case-Book</div></div>
+  </div>
+  <div class="sp"></div>
+  <a class="tbtn" href="./bilingual.html" title="中英双语阅读">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+    <span class="lbl">双语</span>
+  </a>
+  <a class="tbtn" href="./audiobook.html" title="真人有声书">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+    <span class="lbl">听书</span>
+  </a>
+  <button class="tbtn" id="btn-settings" title="阅读设置">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span class="lbl">设置</span>
+  </button>
+  <button class="tbtn" id="btn-tts" title="朗读本文">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9.4 9.4 0 0 1 0 13"/></svg>
+    <span class="lbl">朗读</span>
+  </button>
+</header>
+
+<!-- ============ 书架视图 ============ -->
+<main id="view-shelf">
+  <section class="hero">
+    <div class="era">1904 — 1966 · The Golden Age of Detective Fiction</div>
+    <h1>MARGERY <span class="accent">ALLINGHAM</span></h1>
+    <div class="cn">玛格丽·艾林翰书斋</div>
+    <p class="bio">
+      与阿加莎·克里斯蒂、多萝西·塞耶斯、约瑟芬·铁伊并称<b>「黄金时代侦探小说女王」</b>。她笔下的侦探阿尔伯特·坎皮恩（Albert Campion）——那个戴着角质眼镜、装傻充愣的金发青年——从 1929 年的滑稽配角一路成长为战后英国小说中最沉静的人性观察者。本馆藏<b> 28 部公版作品</b>，按创作年代陈列，从 17 岁的海盗传奇到去世后结集的案卷遗珠，完整收录这位「写侦探小说的文体家」的几乎全部创作轨迹。
+    </p>
+    <div class="stats">
+      <div class="st"><div class="n" id="st-books">28</div><div class="l">部作品</div></div>
+      <div class="st"><div class="n" id="st-ch">563</div><div class="l">章节</div></div>
+      <div class="st"><div class="n">210万</div><div class="l">英文单词</div></div>
+      <div class="st"><div class="n">41年</div><div class="l">创作生涯</div></div>
+    </div>
+  </section>
+
+  <section class="guide open" id="guide">
+    <div class="gh" id="guide-toggle">
+      <span class="t">入坑指南</span>
+      <span class="sub">How to Read Allingham</span>
+      <span class="arr">▼</span>
+    </div>
+    <div class="gb">
+      <div class="gpath">
+        <div class="gcard">
+          <div class="gt">Ⅰ · 精品线（推荐首选）</div>
+          <div class="gd">
+            先读<b>《烟中之虎》</b>（1952）——她公认的巅峰，战后伦敦浓雾中的连环杀手，早已超越类型文学；再读<b>《叛国之钱包》</b>（1941）——失忆侦探在 48 小时内自救，悬念密度黄金时代罕见；最后读<b>《幽灵之死》</b>（1934）——死去十年的画家每年「新作」面世，怪奇趣味最浓。
+          </div>
+        </div>
+        <div class="gcard">
+          <div class="gt">Ⅱ · 编年线（看人物成长）</div>
+          <div class="gd">
+            从<b>《黑达德利庄园罪案》</b>（1929）开始——坎皮恩还是个插科打诨的丑角；三十年代看他逐渐成为主角；二战三部曲（《叛国之钱包》《橡木之心》《黑色羽翎》）见证艾林翰转向严肃文学；战后作品沉稳老辣，判若两人。
+          </div>
+        </div>
+        <div class="gcard">
+          <div class="gt">Ⅲ · 主题线（换一种读法）</div>
+          <div class="gd">
+            <b>英国乡村悬疑</b>：《葬礼上的警察》《招手的女士》；<b>怪奇哥特风</b>：《顾及淑女》《甜蜜危险》；<b>非侦探杰作</b>：《橡木之心》——战时萨福克乡村编年史，公认被低估的英国战时文学；<b>短篇集</b>：《坎皮恩探案集》《艾林翰案卷》适合碎片时间。
+          </div>
+        </div>
+      </div>
+      <div class="gnote">
+        <b>关于坎皮恩：</b>Albert Campion 是个假名——出身贵族世家（书中暗示与王室沾亲）、牛津高才生，却自愿扮作「无害的蠢货」游走于伦敦上流社会与底层暗巷之间。他随系列成长：二十年代是荒诞喜剧中的丑角，四十年代因失忆与战争创伤获得人性的深度，五十年代后几乎是艾林翰观察英国的透镜。<br>
+        <b>版权说明：</b>本馆全部文本取自 Faded Page（加拿大分布式校对公版书库）与 Project Gutenberg，作品在加拿大及多数「作者逝世 50/70 年」法域已进入公有领域（艾林翰 1966 年逝世）。文本版权归原项目所有，仅作个人阅读用途。
+      </div>
+    </div>
+  </section>
+
+  <section class="guide" id="zhinfo">
+    <div class="gh" id="zhinfo-toggle">
+      <span class="t">中译本情报</span>
+      <span class="sub">Chinese Editions · 哪里能读到中文</span>
+      <span class="arr">▼</span>
+    </div>
+    <div class="gb">
+      <div class="zh-note" style="border-top:none;padding-top:0;margin-top:8px">
+        艾林翰作品的中文引进极为罕见——大陆至今仅一部单行本，台版两部均已久绝版，直到 2026 年才出现第一部完整长篇电子书。以下为全网调研所得的<b>全部已知正版中文渠道</b>；馆内另提供自译双语内容，两不相扰。
+      </div>
+      <div class="zhl">
+        <a class="zhc link" href="./bilingual.html">
+          <div class="zt">馆内自译 · 双语阅读<span class="badge">免费</span></div>
+          <div class="ze">In-House Bilingual Reader</div>
+          <div class="zm">《应节之言》《荒诞故事》《玩笑终了》《游手好闲者》《停灵》《老妈最灵》《票面价值》七篇短篇全译，另加《烟中之虎》前三章及《神秘一英里》《葬礼上的警察》《寿衣时尚》三部长篇的开卷第一章，<b>逐段中英对照</b>，四种排版模式（双语 / 仅英 / 仅中 / 穿插），支持中英双声道朗读。基于公版英文原文的原创翻译，持续增补。</div>
+          <div class="zl">进入双语阅读 →</div>
+        </a>
+        <a class="zhc link" href="./audiobook.html">
+          <div class="zt">馆内听书 · 真人朗读<span class="badge">免费</span></div>
+          <div class="ze">LibriVox Human-Read Audiobooks</div>
+          <div class="zm">《黑达德利庄园的罪行》29 章 + 《神秘的一英里》28 章，LibriVox 志愿者<b>真人录制全本</b>，直连公版服务器逐章播放。其余 26 部可用书斋内置 TTS 英式朗读。</div>
+          <div class="zl">进入听书 →</div>
+        </a>
+        <div class="zhc">
+          <div class="zt">时尚裹尸布<span class="badge">电子书</span></div>
+          <div class="ze">The Fashion in Shrouds · 1938</div>
+          <div class="zm">悦雨传媒 · 2026 年 6 月 · 当当云阅读 ¥35.99 · 19 万字。坎皮恩的姐姐（顶级时装屋设计师）卷入连环命案——<b>目前唯一完整长篇简体中文电子书</b>。</div>
+          <a class="zl" href="https://e.dangdang.com/touch/products/1901400161.html" target="_blank" rel="noopener">当当云阅读 →</a>
+        </div>
+        <div class="zhc">
+          <div class="zt">二次谋杀奇案<span class="badge">微信读书</span></div>
+          <div class="ze">The Case of the Late Pig · 1937</div>
+          <div class="zm">上海文艺出版社 · 2021 · 季霜译 ·「域外故事会」丛书。收《二次谋杀奇案》中篇及四个短篇，<b>大陆唯一简体单行本</b>，微信读书会员可读。</div>
+          <a class="zl" href="https://weread.qq.com/web/bookDetail/14d32260811e747aag01890e" target="_blank" rel="noopener">微信读书 →</a>
+        </div>
+        <div class="zhc">
+          <div class="zt">煙中之虎<span class="badge">台版绝版</span></div>
+          <div class="ze">The Tiger in the Smoke · 1952</div>
+          <div class="zm">台湾远流「谋杀专门店」#035 · 1999 · 精装 447 页。艾林翰巅峰之作的<b>唯一中译本</b>，已绝版多年，图书馆与二手书渠道可寻。</div>
+          <a class="zl" href="https://book.douban.com/subject/2267618/" target="_blank" rel="noopener">豆瓣条目 →</a>
+        </div>
+        <div class="zhc">
+          <div class="zt">甜蜜的危險<span class="badge">台版绝版</span></div>
+          <div class="ze">Sweet Danger · 1933</div>
+          <div class="zm">台湾远流「谋杀专门店」#025 · 詹宏志主编「101 推理经典」之一。坎皮恩系列怪奇趣味代表作，台版同样绝版，二手市场偶见。</div>
+          <a class="zl" href="https://lueren.tw/p-1017299007/" target="_blank" rel="noopener">谋杀专门店书目 →</a>
+        </div>
+      </div>
+      <div class="zh-note">
+        <b>为什么这么少？</b>阿加莎·克里斯蒂在中文世界几乎每部作品都有多个译本，而艾林翰生前仅有台版两部入选「谋杀专门店」，大陆直至 2021 年才引进第一部。她是「评论家最爱、市场最冷落」的黄金时代女王——也正因此，本馆的公版收藏与自译双语，恰是中文读者接近她最完整的免费入口。
+      </div>
+    </div>
+  </section>
+
+  <div id="shelf"></div>
+
+  <footer class="foot">
+    <b>艾林翰书斋</b> · Margery Allingham Reader<br>
+    文本来源：Faded Page (pgdpcanada.net) · Project Gutenberg · 字体：Crimson Pro / Lora / JetBrains Mono<br>
+    真人听书：LibriVox 公版录音 · 双语内容为馆内原创翻译，仅供个人学习<br>
+    支持离线阅读与语音朗读 · 数据仅存于本机浏览器
+  </footer>
+</main>
+
+<!-- ============ 阅读视图 ============ -->
+<main id="view-reader">
+  <div class="rtop">
+    <button class="tbtn" id="btn-back">← 书架</button>
+    <div class="bk" id="r-title">—</div>
+    <div class="sp"></div>
+    <div class="chlabel" id="r-chlabel">—</div>
+    <button class="tbtn" id="btn-chapters" title="章节目录">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h13M3 12h13M3 18h13M18 6h3M18 12h3M18 18h3"/></svg>
+      <span class="lbl">目录</span>
+    </button>
+    <button class="tbtn" id="btn-tts2" title="朗读">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+      <span class="lbl">朗读</span>
+    </button>
+  </div>
+
+  <nav id="chapters">
+    <div class="cht">Chapters · 章节目录</div>
+    <div id="ch-list"></div>
+  </nav>
+
+  <div id="reader-main">
+    <div class="rwrap">
+      <div class="rhead">
+        <div class="rt" id="ch-title">—</div>
+        <div class="rst" id="ch-sub"></div>
+        <div class="rule"></div>
+      </div>
+      <div id="content"></div>
+      <div class="rfoot">
+        <span class="pn" id="r-prog">—</span>
+        <span class="sp"></span>
+        <button class="nbtn" id="btn-prev">← 上一章</button>
+        <button class="nbtn" id="btn-next">下一章 →</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- TTS 控制条 -->
+<div id="ttsbar">
+  <span class="tt">朗读</span>
+  <button class="tbtn mini" id="tts-prev" title="上一句">⏮</button>
+  <button class="tbtn mini" id="tts-play" title="播放/暂停">▶</button>
+  <button class="tbtn mini" id="tts-next" title="下一句">⏭</button>
+  <span class="prog" id="tts-prog">—</span>
+  <select id="tts-rate" title="语速">
+    <option value="0.7">0.7×</option><option value="0.8">0.8×</option>
+    <option value="0.9">0.9×</option><option value="1" selected>1.0×</option>
+    <option value="1.1">1.1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option>
+  </select>
+  <select id="tts-voice" title="语音"></select>
+  <button class="tbtn mini" id="tts-stop" title="停止">✕</button>
+</div>
+
+<!-- 设置面板 -->
+<div id="settings">
+  <div class="st">Theme · 主题</div>
+  <div class="segrow">
+    <button class="chip" data-theme="dark"><span class="aa">墨</span></button>
+    <button class="chip" data-theme="paper"><span class="aa">笺</span></button>
+    <button class="chip" data-theme="light"><span class="aa">素</span></button>
+  </div>
+  <div class="st">Font Size · 字号</div>
+  <div class="segrow">
+    <button class="chip" data-fs="16">A⁻</button>
+    <button class="chip" data-fs="18">A</button>
+    <button class="chip" data-fs="19">A⁺</button>
+    <button class="chip" data-fs="21">A⁺⁺</button>
+    <button class="chip" data-fs="23">A⁺⁺⁺</button>
+  </div>
+  <div class="st">Line Height · 行距</div>
+  <input type="range" id="set-lh" min="1.6" max="2.2" step="0.05" value="1.85">
+  <div class="st">Data · 本机数据</div>
+  <button class="chip" id="btn-clearprog" style="width:100%;color:var(--danger)">清除全部阅读进度</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ================================================================
+   艾林翰书斋 · 单文件阅读器
+   ================================================================ */
+
+/* ---------- 书目元数据 ----------
+   dt 检测器类型:
+   chapter   CHAPTER N / Chapter N / _Chapter N_（含单词数字与罗马数字）
+   numline   孤立数字行 1 2 3…
+   romline   孤立罗马数字行 I II III…
+   romcaps   罗马数字+大写标题 "I GHOSTS"
+   numtitle  数字+多空格+标题 "1  Along Those Present"
+   numtitle2 数字行+标题行两行式 "1\nThe Elopers"（含 Prologue）
+   ghostcolon "N : _Title_"
+   stories   短篇集·全大写孤行篇名
+   storylist 短篇集·显式篇名清单
+   storychapters 篇名清单+篇内单词数字分章
+   casebook  档案块式篇名（ALBERT CAMPION'S CASEBOOK）
+   storypart 篇名+PART 分节
+   single    单章
+   virtual   无章节·按行数虚拟分章
+*/
+const BOOKS=[
+{id:'blackkerchief-dick',en:"Black'erchief Dick",zh:'黑巾迪克',year:1923,grp:'a',dt:'chapter',pg:true,blurb:'十七岁少女写就的航海传奇：1745 年奥德利海滩，走私船「黑巾迪克」号的恩怨情仇。虽无坎皮恩，却是理解艾林翰浪漫底色的原点。',tags:['处女作','海盗传奇']},
+{id:'the-crime-at-black-dudley',en:'The Crime at Black Dudley',zh:'黑达德利庄园罪案',year:1929,grp:'a',dt:'chapter',blurb:'系列开山之作。乡间庄园周末聚会突遭蒙面团伙挟持，众人轮流猜测谁才是隐藏的凶手。坎皮恩以「无害蠢货」形象首次登场，戏份不多却光芒难掩。',tags:['系列开篇','庄园密室']},
+{id:'mystery-mile',en:'Mystery Mile',zh:'神秘一英里',year:1930,grp:'b',dt:'numtitle',blurb:'遭遇连环追杀的美国法官，循中世纪藏宝诗藏身萨福克海岸的神秘一英里。哥特式惊悚与幽默桥段并举，坎皮恩开始扛起主角。',tags:['乡野哥特','追杀悬疑']},
+{id:'look-to-the-lady',en:'Look to the Lady',zh:'顾及淑女',year:1931,grp:'b',dt:'chapter',blurb:'守护国宝「吉尔思圣杯」的三大家族秘辛：祭祀仪式、吉普赛部落、江湖马戏团轮番登场。艾林翰最天马行空的一部冒险狂想曲。',tags:['圣物传奇','狂想冒险']},
+{id:'police-at-the-funeral',en:'Police at the Funeral',zh:'葬礼上的警察',year:1931,grp:'b',dt:'chapter',blurb:'剑桥老宅中暴君般的老夫人接连发出死亡威胁，家族成员却在威胁应验前逐一失踪。维多利亚式宅邸连环案，古典本格的教科书演绎。',tags:['老宅连环案','古典本格']},
+{id:'sweet-danger',en:'Sweet Danger',zh:'甜蜜危险',year:1933,grp:'b',dt:'chapter',blurb:'虚构的阿塞里王国王位之争：坎皮恩与姐弟搭档在法国乡间对抗冒牌继承人。轻快的绅士怪盗风格，被不少书迷视为最有趣的早期作品。',tags:['王位之争','轻快冒险']},
+{id:'death-of-a-ghost',en:'Death of a Ghost',zh:'幽灵之死',year:1934,grp:'b',dt:'ghostcolon',blurb:'死后十年的名画家依遗嘱每年「新作」面世，第十二年的预展之夜却来了个不速之客。艺术界的虚荣与谋杀，怪奇趣味最浓的一部。',tags:['艺术怪谈','名作']},
+{id:'flowers-for-the-judge',en:'Flowers for the Judge',zh:'献给法官的花',year:1936,grp:'b',dt:'virtual',blurb:'伦敦老牌出版社合伙人失踪二十年后陈尸库房，侄辈三人卷入审判。法庭戏与家族解剖并重，艾林翰对「体面阶层」最尖刻的一次凝视。',tags:['出版世家','法庭戏']},
+{id:'dancers-in-mourning',en:'Dancers in Mourning',zh:'哀悼中的舞者',year:1937,grp:'b',dt:'chapter',blurb:'英国首席芭蕾明星的完美人生接连崩塌：爱犬被杀、妻子出逃、兄长遇害。光鲜舞台背后的畸形控制欲，凶手动机令人不寒而栗。',tags:['芭蕾舞台','心理侧写']},
+{id:'the-case-of-the-late-pig',en:'The Case of the Late Pig',zh:'迟来的猪案',year:1937,grp:'b',dt:'chapter',blurb:'坎皮恩亲自叙述的唯一案件：他参加自己「仇人」的葬礼，数月后同一人再度被杀——还得再死一次。幽默与诡计俱佳的年度怪谈。',tags:['第一人称','双尸诡计']},
+{id:'mr-campion-criminologist',en:'Mr. Campion: Criminologist',zh:'坎皮恩探案集',year:1937,grp:'b',dt:'casebook',blurb:'六桩档案体短案：以坎皮恩私家案卷的形式呈现，每案附日期、地点与「办案札记」。形式感极强的短篇实验，调皮又精巧。',tags:['档案体','短篇集']},
+{id:'the-fashion-in-shrouds',en:'The Fashion in Shrouds',zh:'寿衣时尚',year:1938,grp:'b',dt:'chapter',blurb:'航空公司名媛设计师的闺蜜接连卷入命案，坎皮恩的妹妹瓦伦丁亦在局中。航空时代的新贵浮华与旧式勒索的碰撞，系列中期佳构。',tags:['航空新贵','家族案件']},
+{id:'mr-campion-and-others',en:'Mr Campion and Others',zh:'坎皮恩与其他人',year:1939,grp:'b',dt:'storylist',titles:['The Case of the Widow','The Case of the Name on the Wrapper','The Case of the Hat Trick','The Case of the Question Mark','The Case of the Old Man in the Window','The Case of the White Elephant','The Border-line Case','The Case of the Frenchman’s Gloves','The Case of the Longer View','It Didn’t Work Out','They Never Get Caught','Publicity','The Perfect Butler','The Mistress in the House'],blurb:'十四个短篇合璧：上半部为「坎皮恩案卷」九案，下半部收录五则无侦探悬疑。战前最后的从容时光，怪诞与温情兼备。',tags:['短篇集','双部结构']},
+{id:'black-plumes',en:'Black Plumes',zh:'黑色羽翎',year:1940,grp:'c',dt:'chapter',blurb:'画廊世家老夫人被杀于自家床榻，墙上名画却不翼而飞。战争阴云下的家族解体寓言，无坎皮恩的独立杰作，氛围压抑而华丽。',tags:['画廊世家','战争阴云']},
+{id:'traitors-purse',en:"Traitor's Purse",zh:'叛国之钱包',year:1941,grp:'c',dt:'romline',blurb:'失忆的坎皮恩在医院醒来，被告知自己是杀警凶手——他必须在记忆归零前阻止一场关乎国家存亡的阴谋。黄金时代罕见的倒计时叙事。',tags:['失忆诡计','战时惊悚','★★★']},
+{id:'the-oaken-heart',en:'The Oaken Heart',zh:'橡木之心',year:1941,grp:'c',dt:'numline',blurb:'非侦探作品：萨福克小村 1939–1940 年战争编年史。敦刻尔克、不列颠空战、美国大兵进驻……艾林翰为家乡写下的战时国民志，被评家视为被低估的英国战时文学。',tags:['战时纪事','非侦探']},
+{id:'pearls-before-swine',en:'Pearls Before Swine',zh:'明珠暗投',year:1945,grp:'c',dt:'numline',blurb:'三百克拉巨钻「明斯克之光」离奇易主，追踪它的记者、掮客、骗子在伦敦狭路相逢。二战尾声的都市黑色喜剧，对「贪婪」的群像速写。',tags:['巨钻疑云','黑色喜剧']},
+{id:'deadly-duo',en:'Deadly Duo',zh:'致命搭档',year:1949,grp:'c',dt:'storychapters',titles:['Wanted: Someone Innocent','Last Act'],blurb:'双中篇：《寻求无辜者》——被指控毒杀姑母的落难孤女；《最后一幕》——女演员假戏成真卷入谋杀。两则女性视角悬疑，心理密度极高。',tags:['双中篇','女性视角']},
+{id:'more-work-for-the-undertaker',en:'More Work for the Undertaker',zh:'殡葬师的额外生意',year:1949,grp:'d',dt:'chapter',blurb:'伦敦贫民窟「四月街」连环毒杀：老巫婆、招魂会、真假继承人搅作一团。市井群像鲜活生猛，坎皮恩与卢格搭档的默契巅峰。',tags:['市井毒杀','搭档默契']},
+{id:'the-tiger-in-the-smoke',en:'The Tiger in the Smoke',zh:'烟中之虎',year:1952,grp:'d',dt:'romcaps',blurb:'战后伦敦浓雾中出没的军中牧师连环杀手。跳出「谁是凶手」的窠臼直逼恶的本质，公认艾林翰巅峰，稳居黄金时代十佳之列。',tags:['巅峰之作','战后伦敦','★★★']},
+{id:'no-love-lost',en:'No Love Lost',zh:'无爱可言',year:1954,grp:'d',dt:'storypart',blurb:'双中篇：《孔雀厅的病人》——乡间宅邸的家庭医生困境；《比爱更安全》——寡妇卷入毒杀疑云。中年情感与罪责的冷静对视。',tags:['双中篇','情感罪责']},
+{id:'the-beckoning-lady',en:'The Beckoning Lady',zh:'招手的女士',year:1955,grp:'d',dt:'chapter',blurb:'彭特斯布莱特村的夏日狂欢夜，税务稽查官与财务天才相继陈尸河畔。田园牧歌下的金钱众生相，坎皮恩一家最松弛的假期探案。',tags:['田园群像','假日探案']},
+{id:'word-in-season',en:'Word in Season',zh:'应节之言',year:1955,grp:'d',dt:'single',blurb:'圣诞短篇：一场风雪夜的家庭和解。坎皮恩与阿曼达婚后生活的温柔一瞥，体量袖珍却余味悠长。',tags:['圣诞短篇','婚后日常']},
+{id:'hide-my-eyes',en:'Hide My Eyes',zh:'掩目',year:1958,grp:'d',dt:'chapter',blurb:'剧院后巷的雨夜命案牵出东区古玩铺的连环失踪。恋爱中的目击者为何替凶手隐瞒？爱与正义皆为盲者的沉痛叩问。',tags:['目击者困境','晚期佳作']},
+{id:'the-china-governess',en:'The China Governess',zh:'中国保姆',year:1962,grp:'d',dt:'numtitle2',blurb:'豪门养子的身世之谜、维多利亚时代的旧罪与一桩「不存在」的谋杀。三线缠绕的晚期集大成之作，叙事技艺炉火纯青。',tags:['身世之谜','三线叙事']},
+{id:'the-mind-readers',en:'The Mind Readers',zh:'读心者',year:1965,grp:'d',dt:'chapter',blurb:'工业巨头的孙子宣称能读心，随即被卷入死亡事件。超感知觉与理性侦探的碰撞——艾林翰对六十年代科幻浪潮的正面回应。',tags:['超能力','科幻浪潮']},
+{id:'cargo-of-eagles',en:'Cargo of Eagles',zh:'鹰之船货',year:1968,grp:'d',dt:'chapter',blurb:'艾林翰逝世后由丈夫皮普·扬曼·卡特续完的遗作：走私犯聚居的河口小镇萨尔特，寻宝图与仇杀交织。系列的温柔谢幕。',tags:['遗作','走私小镇']},
+{id:'the-allingham-case-book',en:'The Allingham Case-Book',zh:'艾林翰案卷',year:1969,grp:'d',dt:'stories',blurb:'身后结集的十八篇选粹，附丈夫执笔的作者小传。从《荒诞故事》到《 Snapdragon 与刑侦科》，浓缩四十年短篇功力，亦是全书系的纪念册。',tags:['遗珠短篇','纪念册','馆内自译六篇']}
+];
+
+const GROUPS=[
+ {k:'a',rn:'Ⅰ',t:'1923 – 1929',d:'初试啼声 · The Apprentice Years'},
+ {k:'b',rn:'Ⅱ',t:'1930 – 1939',d:'黄金时代 · The Golden Run'},
+ {k:'c',rn:'Ⅲ',t:'1940 – 1949',d:'战火淬炼 · The War Years'},
+ {k:'d',rn:'Ⅳ',t:'1950 – 1969',d:'大师晚期 · The Master\'s Twilight'}
+];
+
+/* ---------- 存取工具 ---------- */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let PROG=store.get('alm-prog',{});
+let CFG=store.get('alm-cfg',{theme:'dark',fs:19,lh:1.85,rate:1,voice:''});
+const TEXT_CACHE=new Map();
+
+function toast(msg,ms=2200){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove('show'),ms)}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmtInline(s){return esc(s).replace(/_([^_]+)_/g,'<em>$1</em>')}
+
+/* ================================================================
+   章节检测引擎
+   ================================================================ */
+const ROMAN={I:1,V:5,X:10,L:50,C:100};
+function romanVal(r){let n=0;for(let i=0;i<r.length;i++){const c=ROMAN[r[i]],n2=ROMAN[r[i+1]]||0;n+=c<n2?-c:c}return n}
+
+const RX={
+  chapter:/^_?\s*chapter\s+([ivxlcm]+|\d{1,3}|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty(?:[-\s](?:one|two|three|four|five|six|seven|eight|nine))?|thirty(?:[-\s]one)?)\s*_?\.?$/i,
+  part:/^(part|book)\s+(one|two|three|four|five|six|\d{1,2}|[ivx]{1,5})\.?$/i,
+  romCaps:/^([IVX]{1,7})\s+([A-Z][A-Z\u2019' ,!?&.\-]{2,55})$/,
+  romLine:/^([IVX]{1,7})\.?$/,
+  numLine:/^(\d{1,3})\.?$/,
+  numTitle:/^(\d{1,2})\s{2,}(\S.*)$/,
+  ghostColon:/^(\d{1,2})\s*:\s*(.+)$/,
+  caps:/^[A-Z][A-Z\u2019' ,.!?&\-]{2,55}$/,
+  tocTail:/\s\d{1,4}$/,
+  end:/^THE\s*END\.?$/,
+  transcriber:/^(TRANSCRIBER|Transcriber)/,
+  endBracket:/^\[(The end of|End of)/i,
+  pgEnd:/^\*{0,3}\s*End of the Project Gutenberg/i,
+  illu:/^\[(Illustration|Cover|Map|Sidenote)/i,
+  deco:/^[\s*_*.—―\-]+$/
+};
+
+/* 尾部截断：正文之后返回行号 */
+function findEnd(lines,book){
+  const n=lines.length;
+  let end=n;
+  for(let i=Math.floor(n*0.45);i<n;i++){
+    const t=lines[i].trim();
+    if(!t)continue;
+    if(RX.end.test(t)||RX.transcriber.test(t)||RX.endBracket.test(t)||RX.pgEnd.test(t)){end=i;break}
+  }
+  return end;
+}
+
+/* 孤立行判定：前后皆空行 */
+function isOrphan(lines,i){
+  if(i<1||i>=lines.length-1)return false;
+  return lines[i-1].trim()===''&&lines[i+1].trim()==='';
+}
+
+/* chapter 类型：标题可带下一行副标题 */
+function detectChapter(lines,book,end){
+  const marks=[];
+  const startScan=book.pg?0:30;
+  for(let i=startScan;i<end;i++){
+    const t=lines[i].trim();
+    if(!t||t.length>40)continue;
+    if(!RX.chapter.test(t))continue;
+    if(RX.tocTail.test(t)&&i<end*0.2&&t.split(/\s+/).length>3)continue; // TOC 行防御
+    // 下一行副标题（孤立短行，非句子开头启发）
+    let sub='';
+    if(i+2<end){
+      const nt=lines[i+1].trim(),nt2=lines[i+2].trim();
+      if(nt&&!RX.chapter.test(nt)&&nt.length<60&&nt2===''){
+        if(RX.caps.test(nt)||/^_?[A-Z]/.test(nt))sub=nt.replace(/^_|_$/g,'');
+      }
+    }
+    marks.push({line:i,title:t.replace(/^_+|_+$/g,'').replace(/\s+/g,' ').trim(),sub});
+  }
+  return marks;
+}
+
+function detectNumLine(lines,book,end){
+  const marks=[];let expect=1;
+  for(let i=40;i<end;i++){
+    const t=lines[i].trim();
+    if(t.length>5)continue;
+    const m=t.match(RX.numLine);
+    if(!m||!isOrphan(lines,i))continue;
+    const v=parseInt(m[1],10);
+    if(v===expect){marks.push({line:i,title:'第 '+v+' 节',num:v});expect++}
+  }
+  return marks;
+}
+
+function detectRomLine(lines,book,end){
+  const marks=[];let expect=1;
+  for(let i=40;i<end;i++){
+    const t=lines[i].trim();
+    if(t.length>6)continue;
+    const m=t.match(RX.romLine);
+    if(!m||!isOrphan(lines,i))continue;
+    if(romanVal(m[1])===expect){marks.push({line:i,title:m[1],num:expect});expect++}
+  }
+  return marks;
+}
+
+function detectRomCaps(lines,book,end){
+  const marks=[];
+  for(let i=40;i<end;i++){
+    const t=lines[i].trim();
+    if(t.length>58)continue;
+    const m=t.match(RX.romCaps);
+    if(!m)continue;
+    const v=romanVal(m[1]);
+    if(v>=1&&v<=30&&isOrphan(lines,i))marks.push({line:i,title:m[2],num:v});
+  }
+  return marks;
+}
+
+function detectNumTitle(lines,book,end){
+  const marks=[];
+  for(let i=40;i<end;i++){
+    const t=lines[i].trim();
+    if(t.length>70)continue;
+    const m=t.match(RX.numTitle);
+    if(!m)continue;
+    if(/\d$/.test(t))continue;                      // TOC 带页码
+    if(!isOrphan(lines,i))continue;
+    const v=parseInt(m[1],10);
+    if(v>=1&&v<=40)marks.push({line:i,title:m[2],num:v});
+  }
+  return marks;
+}
+
+function detectGhostColon(lines,book,end){
+  const marks=[];
+  for(let i=40;i<end;i++){
+    const t=lines[i].trim();
+    if(t.length>60)continue;
+    const m=t.match(RX.ghostColon);
+    if(!m)continue;
+    const v=parseInt(m[1],10);
+    if(v>=1&&v<=30)marks.push({line:i,title:m[2].replace(/^_|_$/g,''),num:v});
+  }
+  return marks;
+}
+
+/* 短篇集：全大写孤立行 = 篇名 */
+const STORY_BLACK=new Set(['THE END','TRANSCRIBER NOTES','TRANSCRIBER','CONTENTS','M.A.','VOL.','PART ONE','PART TWO','PART THREE','PART FOUR','ALBERT CAMPION\'S CASEBOOK',"ALBERT CAMPION'S CASEBOOK",'PUBLISHER\'S NOTE',"PUBLISHER'S NOTE",'COPYRIGHT','ILLUSTRATION','THE ALLINGHAM CASE-BOOK','OTHER MANOR BOOKS','JOHANNESBURG AUCKLAND']);
+const normTitle=s=>s.replace(/\s+/g,' ').replace(/[\u2019']/g,"'").trim();
+function detectStories(lines,book,end){
+  const marks=[];
+  for(let i=36;i<end;i++){
+    const t=lines[i].trim();
+    if(!t||t.length<3||t.length>56)continue;
+    if(!isOrphan(lines,i))continue;
+    if(/^([A-Z]\s){3,}[A-Z]$/.test(t))continue;           // 字母间隔的标题页装饰行
+    const tu=t.replace(/_/g,'');                          // 斜体标记 _Marie Celeste_
+    if(!RX.caps.test(tu))continue;
+    if(STORY_BLACK.has(normTitle(tu)))continue;
+    marks.push({line:i,title:tu});
+  }
+  return marks;
+}
+
+function detectStoryList(lines,book,end){
+  const marks=[];
+  const wanted=(book.titles||[]).map(normTitle);
+  const wantedLower=wanted.map(s=>s.toLowerCase());
+  for(let i=30;i<end;i++){
+    const t=normTitle(lines[i]);
+    if(!t||t.length>56)continue;
+    if(!isOrphan(lines,i))continue;
+    const idx=wantedLower.indexOf(t.toLowerCase());
+    if(idx>=0)marks.push({line:i,title:book.titles[idx]});
+  }
+  return marks.sort((a,b)=>a.line-b.line);
+}
+
+/* 篇名清单 + 篇内单词数字分章（deadly-duo） */
+const WORDNUM={ONE:1,TWO:2,THREE:3,FOUR:4,FIVE:5,SIX:6,SEVEN:7,EIGHT:8,NINE:9,TEN:10,ELEVEN:11,TWELVE:12,THIRTEEN:13,FOURTEEN:14,FIFTEEN:15,SIXTEEN:16,SEVENTEEN:17,EIGHTEEN:18,NINETEEN:19,TWENTY:20};
+function detectStoryChapters(lines,book,end){
+  const marks=detectStoryList(lines,book,end);
+  let cur=null;
+  for(let i=30;i<end;i++){
+    const t=lines[i].trim();
+    if(!t||!isOrphan(lines,i))continue;
+    const sm=marks.find(m=>m.line===i);
+    if(sm){cur=sm.title;continue}
+    if(cur&&WORDNUM[t])marks.push({line:i,title:t,partOf:cur});
+  }
+  return marks.sort((a,b)=>a.line-b.line);
+}
+
+/* 档案块：ALBERT CAMPION'S CASEBOOK 之后的篇名 */
+function detectCasebook(lines,book,end){
+  const marks=[];
+  for(let i=30;i<end;i++){
+    const t=lines[i].trim();
+    if(!/^(ALBERT CAMPION'?S CASEBOOK)$/i.test(t))continue;
+    // 向下找最近的篇名（全大写行，跳过 VOL 卷号行）
+    for(let j=i+1;j<Math.min(i+7,end);j++){
+      const tj=lines[j].trim();
+      if(!tj)continue;
+      if(/^VOL\.?\s/i.test(tj))continue;
+      if(tj.length<60){marks.push({line:i,title:tj});break}
+    }
+  }
+  return marks;
+}
+
+/* 篇名 + PART 分节（no-love-lost） */
+function detectStoryPart(lines,book,end){
+  const marks=[];let cur=null;
+  for(let i=30;i<end;i++){
+    const t=lines[i].trim();
+    if(!t||t.length>50||!isOrphan(lines,i))continue;
+    if(RX.caps.test(t)&&!STORY_BLACK.has(t)){
+      if(/^(THE PATIENT AT PEACOCKS HALL|SAFER THAN LOVE)$/.test(t)){cur=t;marks.push({line:i,title:t,story:true});continue}
+    }
+    if(cur&&/^(PART (ONE|TWO|THREE|FOUR))$/.test(t))marks.push({line:i,title:t,partOf:cur});
+  }
+  return marks;
+}
+
+/* 数字行 + 标题行两行式（the-china-governess），含 Prologue */
+function detectNumTitle2(lines,book,end){
+  const marks=[];
+  for(let i=40;i<end-2;i++){
+    const t=lines[i].trim();
+    if(/^prologue\.?$/i.test(t)&&i>0&&lines[i-1].trim()===''){
+      const nt=lines[i+1].trim();
+      if(nt&&nt.length<60&&lines[i+2].trim()==='')marks.push({line:i,title:'Prologue · '+nt});
+      continue;
+    }
+    const m=t.match(/^(\d{1,2})\.?$/);
+    if(!m)continue;
+    if(lines[i-1].trim()!=='')continue;
+    const nt=lines[i+1].trim();
+    if(!nt||nt.length>60||lines[i+2].trim()!=='')continue;
+    const v=parseInt(m[1],10);
+    if(v>=1&&v<=40)marks.push({line:i,title:nt,num:v});
+  }
+  return marks;
+}
+
+function detectVirtual(lines,book,end,chunk){
+  const marks=[];const size=chunk||760;
+  const total=end-60;
+  const count=Math.max(1,Math.ceil(total/size));
+  for(let k=0;k<count;k++)marks.push({line:60+k*size,title:'Part '+(k+1)});
+  return marks;
+}
+
+/* 主解析入口 */
+function parseBook(book,text){
+  const lines=text.split(/\r?\n/);
+  const end=findEnd(lines,book);
+  let marks=[];
+  switch(book.dt){
+    case 'chapter':marks=detectChapter(lines,book,end);break;
+    case 'numline':marks=detectNumLine(lines,book,end);break;
+    case 'romline':marks=detectRomLine(lines,book,end);break;
+    case 'romcaps':marks=detectRomCaps(lines,book,end);break;
+    case 'numtitle':marks=detectNumTitle(lines,book,end);break;
+    case 'numtitle2':marks=detectNumTitle2(lines,book,end);break;
+    case 'ghostcolon':marks=detectGhostColon(lines,book,end);break;
+    case 'stories':marks=detectStories(lines,book,end);break;
+    case 'storylist':marks=detectStoryList(lines,book,end);break;
+    case 'storychapters':marks=detectStoryChapters(lines,book,end);break;
+    case 'casebook':marks=detectCasebook(lines,book,end);break;
+    case 'storypart':marks=detectStoryPart(lines,book,end);break;
+    case 'single':marks=[{line:0,title:book.en}];break;
+    case 'virtual':marks=detectVirtual(lines,book,end);break;
+  }
+  /* 兜底：检测失败→整本单章 */
+  if(marks.length<1){
+    marks=[{line:book.dt==='chapter'?0:30,title:book.en}];
+  }
+  /* 组装章节 */
+  const chapters=[];
+  for(let k=0;k<marks.length;k++){
+    const m=marks[k];
+    const from=m.line+(book.dt==='single'?0:1);
+    const to=(k+1<marks.length)?marks[k+1].line:end;
+    let title=m.title||('Section '+(k+1));
+    if(m.sub)title+=' · '+m.sub;
+    if(m.partOf)title=m.partOf+' · '+title;
+    /* 正文行 */
+    const seg=lines.slice(from,to);
+    const paras=[];
+    let buf=[];
+    const flush=()=>{if(buf.length){paras.push(buf.join(' '));buf=[]}};
+    for(const raw of seg){
+      const t=raw.trim();
+      if(!t){flush();continue}
+      if(RX.illu.test(t))continue;
+      if(RX.deco.test(t))continue;
+      if(book.dt==='casebook'&&/^(VOL\.?\s|DATE:|VENUE:)/i.test(t))continue;  // 档案体卷号/日期/地点行
+      buf.push(t);
+    }
+    flush();
+    if(paras.length)chapters.push({title,par:paras});
+  }
+  const words=text.split(/\s+/).length;
+  return {chapters,words,totalCh:chapters.length};
+}
+
+/* ================================================================
+   文本获取 + 缓存
+   ================================================================ */
+async function loadBook(book){
+  if(TEXT_CACHE.has(book.id))return TEXT_CACHE.get(book.id);
+  const res=await fetch('./novels/'+book.id+'.txt');
+  if(!res.ok)throw new Error('文本加载失败 ('+res.status+')');
+  const text=await res.text();
+  const parsed=parseBook(book,text);
+  TEXT_CACHE.set(book.id,parsed);
+  return parsed;
+}
+
+/* ================================================================
+   书架渲染
+   ================================================================ */
+function pct(book){
+  const p=PROG[book.id];
+  if(!p||!p.total)return 0;
+  return Math.round(((p.ch+(p.frac||0))/p.total)*100);
+}
+function renderShelf(){
+  const shelf=$('#shelf');
+  let html='';
+  GROUPS.forEach(g=>{
+    const books=BOOKS.filter(b=>b.grp===g.k).sort((a,b)=>a.year-b.year);
+    if(!books.length)return;
+    html+=`<div class="era-title"><span class="rn">${g.rn}</span><span class="rt">${g.t}</span><span class="rd">${g.d}</span><span class="rule"></span></div><div class="grid">`;
+    books.forEach(b=>{
+      const p=PROG[b.id];
+      const pc=pct(b);
+      html+=`<div class="bcard ${p&&pc>0?'read':''}" data-id="${b.id}">
+        <div class="yr">${b.year}</div>
+        ${b.tags&&b.tags.some(t=>t.includes('★'))?`<div class="star">${b.tags.find(t=>t.includes('★'))}</div>`:''}
+        <div class="ben">${esc(b.en)}</div>
+        <div class="bzh">${esc(b.zh)}</div>
+        <div class="bb">${esc(b.blurb)}</div>
+        ${pc>0?`<div class="pbar"><i style="width:${pc}%"></i></div>`:''}
+        <div class="bf">
+          ${b.tags.filter(t=>!t.includes('★')).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}
+          <span class="cont">${pc>0?'已读 '+pc+'% →':'开始阅读 →'}</span>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  shelf.innerHTML=html;
+  $$('.bcard').forEach(c=>c.addEventListener('click',()=>openBook(c.dataset.id)));
+}
+
+/* ================================================================
+   阅读器
+   ================================================================ */
+let CUR=null;   // {book, parsed, ch}
+let LOADING=false;
+
+async function openBook(id,anchorCh){
+  const book=BOOKS.find(b=>b.id===id);
+  if(!book)return;
+  LOADING=true;
+  tts.stopAll();
+  $('#view-shelf').style.display='none';
+  $('#view-reader').style.display='block';
+  $('#r-title').textContent=book.zh;
+  document.title=book.en+' · 艾林翰书斋';
+  window.scrollTo(0,0);
+  let parsed;
+  try{
+    parsed=await loadBook(book);
+  }catch(e){
+    toast('⚠ '+e.message);LOADING=false;showShelf();return
+  }
+  const p=PROG[id]||{};
+  let ch=anchorCh!==undefined?anchorCh:(p.ch||0);
+  if(ch>=parsed.chapters.length)ch=parsed.chapters.length-1;
+  CUR={book,parsed,ch};
+  renderChList();
+  renderChapter();
+  LOADING=false;
+}
+
+function renderChList(){
+  const list=$('#ch-list');
+  list.innerHTML=CUR.parsed.chapters.map((c,i)=>`<div class="ci ${i===CUR.ch?'cur':''}" data-i="${i}"><span class="cn">${String(i+1).padStart(2,'0')}</span><span class="ct">${esc(c.title)}</span></div>`).join('');
+  $$('#ch-list .ci').forEach(el=>el.addEventListener('click',()=>{
+    gotoCh(parseInt(el.dataset.i,10));
+  }));
+  const cur=$('#ch-list .ci.cur');
+  if(cur)cur.scrollIntoView({block:'center'});
+}
+
+function renderChapter(){
+  const {book,parsed,ch}=CUR;
+  const c=parsed.chapters[ch];
+  /* 标题拆分：'Main · Sub' */
+  let t=c.title,sub='';
+  const bi=t.indexOf(' · ');
+  if(bi>0){sub=t.slice(bi+3);t=t.slice(0,bi)}
+  $('#ch-title').textContent=t;
+  $('#ch-sub').textContent=sub||book.en+'（'+book.year+'）';
+  /* 正文 */
+  $('#content').innerHTML=c.par.map((p,i)=>'<p'+(i===0?' class="first"':'')+'>'+fmtInline(p)+'</p>').join('');
+  $('#r-chlabel').textContent='CH '+(ch+1)+' / '+parsed.chapters.length+' · '+c.title;
+  $('#btn-prev').disabled=ch<=0;
+  $('#btn-next').disabled=ch>=parsed.chapters.length-1;
+  $('#r-prog').textContent='章节 '+(ch+1)+'/'+parsed.chapters.length+' · '+book.zh;
+  window.scrollTo(0,0);
+  saveProg();
+  tts.refreshSentences();
+  /* 侧栏当前态 */
+  $$('#ch-list .ci').forEach(el=>el.classList.toggle('cur',parseInt(el.dataset.i,10)===ch));
+  const cur=$('#ch-list .ci.cur');
+  if(cur)cur.scrollIntoView({block:'center'});
+}
+
+function gotoCh(i){
+  if(i<0||i>=CUR.parsed.chapters.length)return;
+  tts.stopAll();
+  CUR.ch=i;
+  renderChapter();
+  if(window.innerWidth<=640)closeSidebar();
+}
+
+function saveProg(){
+  if(!CUR)return;
+  const prev=PROG[CUR.book.id]||{};
+  PROG[CUR.book.id]={ch:CUR.ch,total:CUR.parsed.chapters.length,frac:0,ts:Date.now(),words:prev.words||CUR.parsed.words};
+  store.set('alm-prog',PROG);
+}
+
+function showShelf(){
+  $('#view-reader').style.display='none';
+  $('#view-shelf').style.display='block';
+  document.title='艾林翰书斋 · Margery Allingham Reader';
+  tts.stopAll();
+  renderShelf();
+  window.scrollTo(0,0);
+}
+
+function closeSidebar(){$('#chapters').classList.remove('open');document.body.classList.remove('sidebar-open')}
+
+/* 滚动进度（分章粒度 + 滚动位置） */
+let scrollT=0;
+window.addEventListener('scroll',()=>{
+  if(!CUR||LOADING)return;
+  clearTimeout(scrollT);
+  scrollT=setTimeout(()=>{
+    const p=PROG[CUR.book.id];
+    if(!p)return;
+    const h=document.documentElement;
+    const f=h.scrollHeight>h.clientHeight?h.scrollTop/(h.scrollHeight-h.clientHeight):0;
+    p.frac=+(f.toFixed(3));
+    store.set('alm-prog',PROG);
+  },400);
+},{passive:true});
+
+/* ================================================================
+   TTS 朗读引擎（句级高亮）
+   ================================================================ */
+const tts={
+  on:false,paused:false,idx:0,sents:[],els:[],rate:1,voice:'',
+  refreshSentences(){
+    if(this.on)this.stopAll();
+    this.sents=[];this.els=[];
+    $$('#content p').forEach(p=>{
+      p.classList.remove('cur');
+      const text=p.textContent;
+      /* 句子切分 */
+      const parts=this.splitSentences(text);
+      p.innerHTML=parts.map(s=>'<span class="snt">'+esc(s)+'</span>').join(' ');
+      Array.from(p.querySelectorAll('.snt')).forEach((el,k)=>{
+        this.sents.push(el.textContent);this.els.push(el);
+      });
+    });
+  },
+  splitSentences(text){
+    const out=[];let buf='';
+    const n=text.length;
+    for(let i=0;i<n;i++){
+      const c=text[i];
+      buf+=c;
+      if('.!?…'.includes(c)){
+        /* 吸收收尾引号/括号 */
+        let j=i+1;
+        while(j<n&&'"\u201D\u2019\')'.includes(text[j])){buf+=text[j];j++;i++}
+        /* 缩写防御：Mr. Dr. 等 */
+        const tail=buf.trim();
+        if(/\b(Mr|Mrs|Dr|St|Prof|Esq|No|vs|etc|Jr|Sr|Lt|Col|Gen|Capt|Rev|Hon|Fr|Mt)\.$/.test(tail)&&i+1<n&&text[i+1]!==' ')continue;
+        if(buf.trim().length>1)out.push(buf.trim());
+        buf='';
+      }
+    }
+    if(buf.trim())out.push(buf.trim());
+    return out.length?out:[text];
+  },
+  buildVoices(){
+    const sel=$('#tts-voice');
+    const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.startsWith('en'));
+    if(!vs.length){sel.innerHTML='<option value="">默认英文音色</option>';return}
+    sel.innerHTML=vs.map(v=>`<option value="${esc(v.name)}">${esc(v.name.replace(/^Microsoft |^Google /,''))} · ${v.lang}</option>`).join('');
+    if(CFG.voice){sel.value=CFG.voice;if(sel.selectedIndex<0)sel.selectedIndex=0}
+    else{const pref=vs.find(v=>/en-GB/i.test(v.lang))||vs.find(v=>/en[-_]GB/i.test(v.lang));if(pref)sel.value=pref.name}
+  },
+  start(){
+    if(!('speechSynthesis' in window)){toast('此浏览器不支持语音合成');return}
+    if(!this.sents.length)this.refreshSentences();
+    if(!this.sents.length){toast('本章无可朗读内容');return}
+    this.on=true;this.paused=false;
+    document.body.classList.add('tts-reading');
+    $('#ttsbar').classList.add('show');
+    $('#btn-tts').classList.add('on');$('#btn-tts2').classList.add('on');
+    if(this.idx>=this.sents.length)this.idx=0;
+    this.speak();
+  },
+  speak(){
+    if(!this.on||this.idx>=this.sents.length){
+      if(this.idx>=this.sents.length&&this.on){this.nextChapter()}
+      return
+    }
+    this.els.forEach(e=>e.classList.remove('tts-on'));
+    const el=this.els[this.idx];
+    el.classList.add('tts-on');
+    el.closest('p')?.classList.add('cur');
+    $$('#content p').forEach(p=>{if(!p.contains(el))p.classList.remove('cur')});
+    el.scrollIntoView({block:'center',behavior:'smooth'});
+    $('#tts-prog').textContent=(this.idx+1)+'/'+this.sents.length;
+    const u=new SpeechSynthesisUtterance(this.sents[this.idx]);
+    u.lang='en-GB';u.rate=parseFloat($('#tts-rate').value);
+    const vs=speechSynthesis.getVoices();
+    const vn=$('#tts-voice').value;
+    const v=vs.find(x=>x.name===vn);
+    if(v)u.voice=v;
+    u.onend=()=>{if(this.on&&!this.paused){this.idx++;this.speak()}};
+    u.onerror=()=>{if(this.on&&!this.paused){this.idx++;setTimeout(()=>this.speak(),120)}};
+    speechSynthesis.speak(u);
+  },
+  pause(){
+    this.paused=true;speechSynthesis.cancel();
+    $('#tts-play').textContent='▶';
+  },
+  resume(){
+    this.paused=false;$('#tts-play').textContent='⏸';this.speak();
+  },
+  stopAll(){
+    this.on=false;this.paused=false;this.idx=0;
+    speechSynthesis.cancel();
+    document.body.classList.remove('tts-reading');
+    $('#ttsbar').classList.remove('show');
+    $('#btn-tts').classList.remove('on');$('#btn-tts2').classList.remove('on');
+    this.els.forEach(e=>e.classList.remove('tts-on'));
+    $$('#content p').forEach(p=>p.classList.remove('cur'));
+    $('#tts-play').textContent='▶';
+  },
+  jump(d){
+    const was=!this.paused;
+    speechSynthesis.cancel();
+    this.idx=Math.max(0,Math.min(this.sents.length-1,this.idx+d));
+    this.paused=false;
+    if(was||this.on)this.speak();
+  },
+  nextChapter(){
+    if(CUR&&CUR.ch<CUR.parsed.chapters.length-1){
+      toast('本章读完，继续下一章');
+      const i=CUR.ch+1;
+      tts.stopAll();
+      gotoCh(i);
+      setTimeout(()=>{tts.idx=0;tts.start()},600);
+    }else{
+      toast('全书朗读完毕 ✓');
+      this.stopAll();
+    }
+  }
+};
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged=()=>tts.buildVoices();
+  tts.buildVoices();
+}
+
+/* ================================================================
+   设置
+   ================================================================ */
+function applyCfg(){
+  document.documentElement.dataset.theme=CFG.theme;
+  document.documentElement.style.setProperty('--fs',CFG.fs+'px');
+  document.documentElement.style.setProperty('--lh',CFG.lh);
+  $$('#settings .chip[data-theme]').forEach(c=>c.classList.toggle('on',c.dataset.theme===CFG.theme));
+  $$('#settings .chip[data-fs]').forEach(c=>c.classList.toggle('on',parseInt(c.dataset.fs,10)===CFG.fs));
+  $('#set-lh').value=CFG.lh;
+  $('#tts-rate').value=CFG.rate;
+  store.set('alm-cfg',CFG);
+}
+
+/* ================================================================
+   事件绑定
+   ================================================================ */
+function bind(){
+  $('#brand').addEventListener('click',()=>{if(CUR)showShelf()});
+  $('#btn-back').addEventListener('click',showShelf);
+  $('#btn-prev').addEventListener('click',()=>gotoCh(CUR.ch-1));
+  $('#btn-next').addEventListener('click',()=>gotoCh(CUR.ch+1));
+  $('#btn-chapters').addEventListener('click',()=>{
+    $('#chapters').classList.toggle('open');
+    document.body.classList.toggle('sidebar-open');
+  });
+  $('#chapters').addEventListener('click',e=>{if(e.target.id==='chapters')closeSidebar()});
+  $('#guide-toggle').addEventListener('click',()=>$('#guide').classList.toggle('open'));
+  $('#zhinfo-toggle').addEventListener('click',()=>$('#zhinfo').classList.toggle('open'));
+
+  $('#btn-settings').addEventListener('click',e=>{e.stopPropagation();$('#settings').classList.toggle('open')});
+  document.addEventListener('click',e=>{
+    const s=$('#settings');
+    if(s.classList.contains('open')&&!s.contains(e.target)&&!$('#btn-settings').contains(e.target))s.classList.remove('open');
+  });
+  $$('#settings .chip[data-theme]').forEach(c=>c.addEventListener('click',()=>{CFG.theme=c.dataset.theme;applyCfg()}));
+  $$('#settings .chip[data-fs]').forEach(c=>c.addEventListener('click',()=>{CFG.fs=parseInt(c.dataset.fs,10);applyCfg()}));
+  $('#set-lh').addEventListener('input',e=>{CFG.lh=parseFloat(e.target.value);applyCfg()});
+  $('#btn-clearprog').addEventListener('click',()=>{
+    PROG={};store.set('alm-prog',PROG);renderShelf();toast('阅读进度已清除');
+  });
+
+  const toggleTTS=()=>{
+    if(!CUR){toast('请先打开一本书');return}
+    if(tts.on&&!tts.paused){tts.pause()}
+    else if(tts.on&&tts.paused){tts.resume()}
+    else{tts.idx=0;tts.start()}
+    $('#tts-play').textContent=tts.paused?'▶':'⏸';
+  };
+  $('#btn-tts').addEventListener('click',toggleTTS);
+  $('#btn-tts2').addEventListener('click',toggleTTS);
+  $('#tts-play').addEventListener('click',()=>{
+    if(!tts.on){tts.start();$('#tts-play').textContent='⏸';return}
+    if(tts.paused){tts.resume()}else{tts.pause()}
+  });
+  $('#tts-stop').addEventListener('click',()=>tts.stopAll());
+  $('#tts-prev').addEventListener('click',()=>tts.jump(-1));
+  $('#tts-next').addEventListener('click',()=>tts.jump(1));
+  $('#tts-rate').addEventListener('change',e=>{CFG.rate=e.target.value;store.set('alm-cfg',CFG);
+    /* 变速即断即续 */
+    if(tts.on&&!tts.paused){speechSynthesis.cancel();setTimeout(()=>tts.speak(),80)}
+  });
+  $('#tts-voice').addEventListener('change',e=>{CFG.voice=e.target.value;store.set('alm-cfg',CFG);
+    if(tts.on&&!tts.paused){speechSynthesis.cancel();setTimeout(()=>tts.speak(),80)}
+  });
+
+  /* 键盘 */
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='SELECT'||e.target.tagName==='INPUT')return;
+    if(!CUR)return;
+    if(e.key==='ArrowLeft'&&e.altKey)gotoCh(CUR.ch-1);
+    if(e.key==='ArrowRight'&&e.altKey)gotoCh(CUR.ch+1);
+    if(e.key==='Escape'){if(tts.on)tts.stopAll();closeSidebar();$('#settings').classList.remove('open')}
+    if(e.key===' '&&tts.on){e.preventDefault();if(tts.paused)tts.resume();else tts.pause()}
+  });
+
+  /* hash 路由：#book/ch */
+  window.addEventListener('hashchange',routeByHash);
+}
+
+function routeByHash(){
+  const m=location.hash.match(/^#book\/([\w-]+)(?:\/(\d+))?/);
+  if(m){const b=BOOKS.find(x=>x.id===m[1]);if(b)openBook(m[1],m[2]?parseInt(m[2],10):undefined)}
+}
+
+/* ================================================================
+   启动
+   ================================================================ */
+applyCfg();
+renderShelf();
+bind();
+routeByHash();
+
+/* PWA */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
