@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="艾林翰书斋 · 双语阅读 — 七篇短篇全译与四部长篇开卷的英汉逐段对照读本">
+<meta name="theme-color" content="#14231b">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<title>双语阅读 · 艾林翰书斋</title>
+<style>
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Bold.ttf') format('truetype');font-weight:700;font-display:swap}
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Lora';src:url('./_shared/fonts/Lora-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Lora';src:url('./_shared/fonts/Lora-Bold.ttf') format('truetype');font-weight:700;font-display:swap}
+@font-face{font-family:'JBMono';src:url('./_shared/fonts/JetBrainsMono-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+
+:root{
+  --ink:#e9e4d6; --ink-dim:#b9b2a0; --ink-faint:#8a8474;
+  --bg:#14231b; --bg2:#0e1a14; --bg3:#1b2e24; --line:#2d4436;
+  --gold:#d9a862; --gold-soft:#b98c4f; --amber:#e8c07a;
+  --accent:#7fae8e;
+  --serif:'CrimsonPro',Georgia,serif; --body:'Lora',Georgia,serif; --mono:'JBMono',Consolas,monospace;
+  --fs:17px; --fs-en:16px;
+}
+html[data-theme=paper]{--ink:#332f26;--ink-dim:#5b554a;--ink-faint:#857d6d;--bg:#f4eddc;--bg2:#ece2ca;--bg3:#efe7d4;--line:#d8cbaa;--gold:#8a6420;--gold-soft:#a5792f;--amber:#7d5a1a;--accent:#48705a}
+html[data-theme=light]{--ink:#27251f;--ink-dim:#55524a;--ink-faint:#8a8474;--bg:#faf8f3;--bg2:#f1eee5;--bg3:#ffffff;--line:#ddd8c8;--gold:#8a6420;--gold-soft:#a5792f;--amber:#7d5a1a;--accent:#48705a}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:var(--fs);-webkit-font-smoothing:antialiased}
+a{color:var(--amber)}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+::selection{background:var(--gold);color:#14231b}
+.hidden{display:none!important}
+
+/* ===== 顶栏 ===== */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;display:flex;align-items:center;gap:12px;padding:0 18px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar .back{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--accent);white-space:nowrap}
+.topbar .back:hover{color:var(--amber)}
+.topbar .bt{font-family:var(--serif);font-weight:700;font-size:16px;letter-spacing:.05em;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.modes{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--bg3);flex:none}
+.modes button{padding:6px 11px;font-size:12px;color:var(--ink-faint);border-right:1px solid var(--line);transition:.15s;white-space:nowrap}
+.modes button:last-child{border-right:none}
+.modes button:hover{color:var(--amber)}
+.modes button.on{background:var(--gold);color:#14231b;font-weight:700}
+
+/* ===== 选书页 ===== */
+#view-pick{padding-top:56px;max-width:860px;margin:0 auto;padding-left:20px;padding-right:20px}
+.pick-head{padding:56px 0 14px;text-align:center}
+.pick-head .era{font-family:var(--mono);font-size:10.5px;letter-spacing:.34em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:16px}
+.pick-head h1{font-family:var(--serif);font-size:clamp(30px,5vw,46px);font-weight:700;line-height:1.15}
+.pick-head h1 em{color:var(--amber);font-style:italic}
+.pick-head .sub{font-size:14px;color:var(--ink-dim);margin-top:14px;line-height:1.9;max-width:560px;margin-left:auto;margin-right:auto}
+.pick-note{margin:26px auto 34px;max-width:640px;border:1px dashed var(--line);border-radius:12px;padding:15px 20px;font-size:13px;line-height:1.9;color:var(--ink-faint);background:var(--bg3)}
+.pick-note b{color:var(--gold)}
+.pick-list{display:grid;gap:16px;padding-bottom:70px}
+.pcard{position:relative;border:1px solid var(--line);border-radius:15px;background:var(--bg3);padding:22px 24px 20px;cursor:pointer;transition:.2s;overflow:hidden;display:block;text-decoration:none}
+.pcard:hover{border-color:var(--gold-soft);transform:translateY(-3px);box-shadow:0 12px 34px rgba(0,0,0,.28)}
+.pcard .yr{position:absolute;top:16px;right:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--gold-soft);border:1px solid var(--line);border-radius:6px;padding:2.5px 8px;background:var(--bg)}
+.pcard .ten{font-family:var(--serif);font-size:22px;font-weight:700;line-height:1.3;color:var(--ink);margin-bottom:4px;padding-right:70px}
+.pcard .tzh{font-family:var(--serif);font-size:15px;color:var(--amber);letter-spacing:.12em;margin-bottom:12px}
+.pcard .td{font-size:13.5px;line-height:1.85;color:var(--ink-dim)}
+.pcard .tf{display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);align-items:center}
+.pcard .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-faint);text-transform:uppercase;border:1px solid var(--line);border-radius:5px;padding:2px 8px}
+.pcard .go{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--gold-soft)}
+
+/* ===== 阅读视图 ===== */
+#view-read{padding-top:56px;display:none}
+.rwrap{max-width:780px;margin:0 auto;padding:42px 26px 30px}
+.rhead{text-align:center;margin-bottom:38px}
+.rhead .rt{font-family:var(--serif);font-size:clamp(26px,4vw,36px);font-weight:700;color:var(--amber);line-height:1.25}
+.rhead .rst{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink-faint);margin-top:8px}
+.rhead .rz{font-size:14px;color:var(--ink-dim);margin-top:6px;letter-spacing:.2em}
+.rhead .meta{display:flex;justify-content:center;gap:18px;margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--gold-soft);text-transform:uppercase}
+.rhead .rule{width:70px;height:1px;background:var(--gold-soft);margin:22px auto 0}
+.trans-note{margin:0 0 34px;font-size:12.5px;line-height:1.9;color:var(--ink-faint);border:1px dashed var(--line);border-radius:10px;padding:11px 16px;background:var(--bg3);text-align:center}
+.trans-note b{color:var(--gold)}
+
+/* ===== 双语段落 —— 四模式统一采用正规对照读本排版：无底色块、无侧边条、双语同权 ===== */
+#content{font-size:var(--fs);line-height:1.85}
+.seg{margin:0 0 1.35em}
+.seg .zh{font-family:var(--body),'Microsoft YaHei','PingFang SC',serif;font-size:var(--fs);line-height:2.0;color:var(--ink);text-align:justify}
+.seg .en{font-family:var(--serif);font-size:var(--fs-en);line-height:1.8;color:var(--ink);text-align:justify}
+.seg .en em{font-style:italic;color:var(--amber)}
+.seg .scene{margin:1.4em auto;text-align:center;color:var(--gold-soft);letter-spacing:.6em;text-indent:.6em;font-size:12px}
+
+/* 双语：中上英下（中文优先读本），语言间细线分隔 */
+body.mode-bi .seg{display:flex;flex-direction:column;margin-bottom:1.35em}
+body.mode-bi .seg .zh{order:1;padding:0 0 .7em;margin-bottom:0;border-bottom:1px solid var(--line)}
+body.mode-bi .seg .en{order:2;padding:.65em .2em 0}
+body.mode-bi .seg .scene{order:0}
+
+/* 仅英：英文小说排版 —— 首行缩进、两端对齐、自动断词（场景切换后首段不缩进） */
+body.mode-en .seg .zh{display:none}
+body.mode-en .seg{margin-bottom:0}
+body.mode-en .seg .en{font-size:var(--fs);line-height:1.9;padding:0;margin-bottom:.5em;text-indent:1.5em;hyphens:auto;-webkit-hyphens:auto}
+body.mode-en .seg:first-child .en,
+body.mode-en .seg:has(.scene)+.seg .en{text-indent:0}
+
+/* 仅中：中文书籍排版 —— 通篇首行缩进两字符 */
+body.mode-zh .seg .en{display:none}
+body.mode-zh .seg{margin-bottom:0}
+body.mode-zh .seg .zh{padding:0;margin-bottom:.12em;text-indent:2em}
+
+/* 穿插：英上中下（英文优先读本），语言间细线分隔 */
+body.mode-inter .seg{display:flex;flex-direction:column;margin-bottom:1.15em}
+body.mode-inter .seg .en{order:1;padding:0 0 .7em;border-bottom:1px solid var(--line);margin-bottom:0}
+body.mode-inter .seg .zh{order:2;padding:.6em 0 0;margin-bottom:0}
+body.mode-inter .seg .scene{order:0}
+
+/* ===== TTS ===== */
+.tts-on{background:color-mix(in srgb,var(--gold) 30%,transparent);color:var(--ink);border-radius:3px;box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 30%,transparent)}
+body.tts-reading #content .seg .en,body.tts-reading #content .seg .zh{color:var(--ink-faint)}
+body.tts-reading #content .seg:has(.tts-on) .en,body.tts-reading #content .seg:has(.tts-on) .zh{color:var(--ink)}
+#ttsbar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);z-index:60;display:flex;align-items:center;gap:8px;padding:9px 14px;background:color-mix(in srgb,var(--bg2) 94%,transparent);border:1px solid var(--line);border-radius:13px;backdrop-filter:blur(12px);transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#ttsbar.show{transform:translate(-50%,0)}
+#ttsbar .prog{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);min-width:64px;text-align:center}
+#ttsbar select{background:var(--bg);color:var(--ink-dim);border:1px solid var(--line);border-radius:7px;font-size:11.5px;padding:4px 6px;font-family:var(--mono);max-width:150px}
+.tbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 11px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--ink-dim);background:var(--bg3);transition:.15s}
+.tbtn:hover{color:var(--amber);border-color:var(--gold-soft)}
+.tbtn.mini{padding:5px 9px;font-size:12px}
+.tbtn.on{color:#14231b;background:var(--gold);border-color:var(--gold);font-weight:700}
+
+/* ===== 工具条 ===== */
+#tools{position:fixed;right:18px;bottom:22px;z-index:55;display:flex;flex-direction:column;gap:8px}
+#tools .tbtn{width:40px;height:40px;border-radius:11px;background:var(--bg3)}
+#fontpanel{position:fixed;right:68px;bottom:22px;z-index:55;background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:14px 16px;display:none;min-width:200px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#fontpanel.open{display:block}
+#fontpanel .fl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:8px}
+#fontpanel .row{display:flex;gap:6px;margin-bottom:12px}
+#fontpanel .chip{padding:5px 10px;border:1px solid var(--line);border-radius:7px;font-size:12px;color:var(--ink-dim);background:var(--bg)}
+#fontpanel .chip.on{background:var(--gold);color:#14231b;font-weight:700;border-color:var(--gold)}
+.foot{margin:60px 0 50px;padding-top:26px;border-top:1px solid var(--line);font-size:12.5px;line-height:2;color:var(--ink-faint);text-align:center}
+.foot b{color:var(--ink-dim)}
+.loading{text-align:center;padding:90px 20px;color:var(--ink-faint);font-style:italic}
+.toast{position:fixed;left:50%;top:74px;transform:translateX(-50%);z-index:99;background:var(--gold);color:#14231b;font-size:13px;font-weight:700;padding:9px 18px;border-radius:9px;opacity:0;transition:.25s;pointer-events:none;letter-spacing:.05em}
+.toast.show{opacity:1}
+
+@media(max-width:700px){
+  .topbar{gap:8px;padding:0 10px}
+  .topbar .bt{font-size:14px}
+  .modes button{padding:5px 7px;font-size:11px}
+  .rwrap{padding:30px 16px 20px}
+  #ttsbar{left:12px;right:12px;transform:translate(0,140%);flex-wrap:wrap;justify-content:center}
+  #ttsbar.show{transform:translate(0,0)}
+  #tools{right:12px;bottom:14px}
+  #fontpanel{right:60px;bottom:14px}
+}
+@media print{.topbar,#ttsbar,#tools,#fontpanel,.mtools{display:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="./index.html">← 书斋</a>
+  <span class="bt" id="bt-title">双语阅读 · 艾林翰书斋</span>
+  <div class="modes" id="modes" style="display:none">
+    <button data-mode="bi" class="on" title="中文优先：中上英下，细线分隔，对照读本版式">双语</button>
+    <button data-mode="en" title="英文小说排版：首行缩进、两端对齐、自动断词">仅英</button>
+    <button data-mode="zh" title="中文书籍排版：通篇首行缩进两字符">仅中</button>
+    <button data-mode="inter" title="英文优先：英上中下，细线分隔，对照读本版式">穿插</button>
+  </div>
+</div>
+
+<!-- 选书 -->
+<div id="view-pick">
+  <div class="pick-head">
+    <div class="era">Bilingual Reader · 双语对照</div>
+    <h1>双语<em>阅读</em></h1>
+    <p class="sub">英汉逐段对照 · 四种阅读模式 · 中英双语音色朗读<br>本页收录自译中文十一种——七篇短篇全译，与四部长篇的开卷第一章</p>
+  </div>
+  <div class="pick-note">
+    <b>版权说明：</b>艾林翰作品在中国已进入公有领域（作者逝于 1966 年），本页英文原文取自加拿大 FadedPage 公版电子书。中文部分为<b>本站自译</b>，现有商业中译本（远流《煙中之虎》《甜蜜的危險》、上海文艺《二次谋杀奇案》、当当电子书《时尚裹尸布》）受版权保护，未经授权不可收录，详见书斋首页「中译本情报」。
+  </div>
+  <div class="pick-list" id="pick-list"></div>
+</div>
+
+<!-- 阅读 -->
+<div id="view-read">
+  <div class="rwrap">
+    <div class="rhead">
+      <div class="rt" id="r-title"></div>
+      <div class="rst" id="r-sub"></div>
+      <div class="rz" id="r-zh"></div>
+      <div class="meta">
+        <span id="m-year"></span><span id="m-scope"></span><span>EN ⇄ ZH</span>
+      </div>
+      <div class="rule"></div>
+    </div>
+    <div class="trans-note" id="trans-note"></div>
+    <div id="content"><div class="loading">正在加载双语内容…</div></div>
+    <div class="foot" id="read-foot"></div>
+  </div>
+</div>
+
+<!-- TTS -->
+<div id="ttsbar">
+  <span class="tbtn mini" id="tts-prev" title="上一句">⏮</span>
+  <button class="tbtn mini" id="tts-play" title="播放/暂停">▶</button>
+  <button class="tbtn mini" id="tts-next" title="下一句">⏭</button>
+  <span class="prog" id="tts-prog">—</span>
+  <select id="tts-lang" title="朗读语言">
+    <option value="auto">随模式</option>
+    <option value="en">英语原文</option>
+    <option value="zh">中文译文</option>
+  </select>
+  <select id="tts-rate" title="语速">
+    <option value="0.75">0.75×</option>
+    <option value="0.9">0.9×</option>
+    <option value="1" selected>1.0×</option>
+    <option value="1.15">1.15×</option>
+    <option value="1.3">1.3×</option>
+  </select>
+  <select id="tts-voice" title="语音"></select>
+  <button class="tbtn mini" id="tts-stop" title="停止">✕</button>
+</div>
+
+<!-- 工具 -->
+<div id="tools">
+  <button class="tbtn" id="btn-tts" title="朗读">🔊</button>
+  <button class="tbtn" id="btn-font" title="字号与主题">Aa</button>
+  <button class="tbtn" id="btn-top" title="回到顶部">↑</button>
+</div>
+<div id="fontpanel">
+  <div class="fl">字号</div>
+  <div class="row" id="fs-row">
+    <button class="chip" data-fs="15">小</button>
+    <button class="chip" data-fs="17" class="on">中</button>
+    <button class="chip" data-fs="19">大</button>
+    <button class="chip" data-fs="21">特大</button>
+  </div>
+  <div class="fl">主题</div>
+  <div class="row" id="th-row">
+    <button class="chip" data-theme="dark">墨绿</button>
+    <button class="chip" data-theme="paper">宣纸</button>
+    <button class="chip" data-theme="light">月白</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ===== 书目 ===== */
+const BOOKS=[
+  {
+    id:'word-in-season',
+    enFile:'novels/word-in-season.txt', zhFile:'novels-zh/应节之言.txt',
+    title:'Word in Season', sub:'A Story for Christmas', zh:'应节之言',
+    year:'1955 / 1965', scope:'全篇 · 30 段',
+    desc:'圣诞前夜，坎皮恩家的红色塞特犬「波因斯」面临一生最大的抉择——传说午夜前的一小时，所有动物都能开口说人话。一篇温柔又淘气的圣诞小品，艾林翰写给书迷的节日礼物。',
+    note:'自译全篇 · 英文取自 FadedPage 公版（1965 年小说集版）',
+    enStart:'Mr Campion sat in the armchair', enEnd:/began\s+to\s+chime the hour\./,
+    zhSkip:2, reader:'word-in-season'
+  },
+  {
+    id:'tiger-in-the-smoke',
+    enFile:'novels/the-tiger-in-the-smoke.txt', zhFile:'novels-zh/烟中之虎.txt',
+    title:'The Tiger in the Smoke', sub:'Chapter I · Ghosts', zh:'烟中之虎 · 第一章 幽灵',
+    year:'1952', scope:'第一章 · 176 段',
+    desc:'雾锁伦敦。战时阵亡的丈夫突然出现在寄来的街头快照里，未婚妻梅格按神秘字条的指引走进车站——坎皮恩与卢克总督察布下罗网，网住的却只是一个摘下假胡子的替身。这是艾林翰最负盛名之作的开篇。',
+    note:'自译第一章 · 英文取自 FadedPage 公版',
+    enStart:'It may be only blackmail', enEnd:/we haven.t a thing on him, have we.yet\?/,
+    zhSkip:2, reader:'the-tiger-in-the-smoke'
+  },
+  {
+    id:'tiger-in-the-smoke-2',
+    enFile:'novels/the-tiger-in-the-smoke.txt', zhFile:'novels-zh/烟中之虎-第二章.txt',
+    title:'The Tiger in the Smoke', sub:'Chapter II · At Home', zh:'烟中之虎 · 第二章 在家',
+    year:'1952', scope:'第二章 · 161 段',
+    desc:'圣彼得门广场的雾比哪里都厚。老牧师埃弗里尔为梅格忧心，阿曼达夫人一针一线拆解冒牌者的来历；卢克总督察登门，道破那人的底细——诨名「破烂儿」的莫里森——随即带来更坏的消息：此人已在面包屑街的巷子里被发现，死了。阁楼房客山姆端着香槟登场，而一通迟迟不来的电话，吊住了整章的尾巴。',
+    note:'自译第二章 · 英文取自 FadedPage 公版',
+    enStart:'AT HOME      The fog was thicker than ever', enEnd:/why\s+the\s+hell\s+doesn.t\s+he\s+ring\s+oop\?/,
+    zhSkip:2, reader:'the-tiger-in-the-smoke'
+  },
+  {
+    id:'tiger-in-the-smoke-3',
+    enFile:'novels/the-tiger-in-the-smoke.txt', zhFile:'novels-zh/烟中之虎-第三章.txt',
+    title:'The Tiger in the Smoke', sub:'Chapter III · The Spoor', zh:'烟中之虎 · 第三章 兽踪',
+    year:'1952', scope:'第三章 · 121 段',
+    desc:'卢克头一回嗅到了那头"虎"的气息。雾巷尽头，"破烂儿"蜷死在两墙夹角的窟窿里；老牧师摘帽跪在血泊中，为素不相识的死者拭面阖目。一件属于阵亡者马丁的运动上衣、两块画蛇添足的皮补丁、一枚被细心拆去的裁缝招牌——老人执意把这件"兽踪"带回家，而警局的问询条堆了起来：杰弗里·莱维特，今晚失踪了。',
+    note:'自译第三章 · 英文取自 FadedPage 公版',
+    enStart:'THE SPOOR      It is not easy to tell', enEnd:/another\s+card\s+in\s+the\s+pack,\u201D\s*said\s+Mr\.\s+Campion\./,
+    zhSkip:2, reader:'the-tiger-in-the-smoke'
+  },
+  {
+    id:'mystery-mile',
+    enFile:'novels/mystery-mile.txt', zhFile:'novels-zh/神秘一英里.txt',
+    title:'Mystery Mile', sub:'Chapter I · Among Those Present', zh:'神秘一英里 · 第一章 座上宾客',
+    year:'1930', scope:'第一章 · 123 段',
+    desc:'归航的"象号"邮轮上，美国人押五十美元赌洛贝特法官活不过两周。船上音乐会的压轴戏是日本魔术师的"消失柜"——一位戴角质眼镜、揣着白鼠的傻气青年执意让他的小宝贝海格先上场。柜门合上再开，白鼠已在钢栅上蜷曲焦黑：那口柜子，通了电。',
+    note:'自译第一章 · 英文取自 FadedPage 公版',
+    enStart:'I\u2019ll bet you fifty dollars', enEnd:/Regent 01300/,
+    zhSkip:2, reader:'mystery-mile'
+  },
+  {
+    id:'police-at-the-funeral',
+    enFile:'novels/police-at-the-funeral.txt', zhFile:'novels-zh/葬礼上的警察.txt',
+    title:'Police at the Funeral', sub:'Chapter I · \u201CHere Lies a Benefactor\u201D', zh:'葬礼上的警察 · 第一章 这里长眠着一位恩人',
+    year:'1931', scope:'第一章 · 85 段',
+    desc:'阴雨天，新晋"大五"的欧茨探长被人从苏格兰场一路盯梢到霍尔本一处百年墓园。锅炉房里，头戴猎鹿帽的坎皮恩正等候一位误当他私家侦探的姑娘——她剑桥老宅里的舅舅失踪一周。而当盯梢者的脸在院子里现身，姑娘当场晕了过去。',
+    note:'自译第一章 · 英文取自 FadedPage 公版',
+    enStart:'When one man is following another', enEnd:/there was no trace\./,
+    zhSkip:2, reader:'police-at-the-funeral'
+  },
+  {
+    id:'fashion-in-shrouds',
+    enFile:'novels/the-fashion-in-shrouds.txt', zhFile:'novels-zh/寿衣时尚.txt',
+    title:'The Fashion in Shrouds', sub:'Chapter I', zh:'寿衣时尚 · 第一章',
+    year:'1938', scope:'第一章 · 132 段',
+    desc:'帕彭代克时装屋的屋顶花园。坎皮恩来看妹妹瓦尔——首席设计师，也是他胞妹。午后的客人是影后乔治娅·威尔斯：三年前，她那位做大律师的未婚夫波特兰-史密斯在赴宴归途凭空蒸发。坎皮恩追查两年无果——直到前一夜，他在肯特一处九岁孩童的树丛巢穴里找到了他。',
+    note:'自译第一章 · 英文取自 FadedPage 公版',
+    enStart:'Probably the most exasperating thing', enEnd:/dried leaves\./,
+    zhSkip:2, reader:'the-fashion-in-shrouds'
+  },
+  {
+    id:'tall-story',
+    enFile:'novels/the-allingham-case-book.txt', zhFile:'novels-zh/荒诞故事.txt',
+    title:'Tall Story', sub:'from The Allingham Case-Book', zh:'荒诞故事',
+    year:'1969', scope:'全篇 · 35 段',
+    desc:'雾夜酒吧，卢克自曝入行的本钱是身高。当年全城布网捉拿惯窃「拖鞋帮」，窃贼落网时身上却空空如也——赃款与枪藏在一张贴得格外高的传单背后，一个只有长胳膊才够得着的墙洞里。',
+    note:'自译全篇 · 收录于《The Allingham Case-Book》（1969）',
+    enStart:'London was having one of her days', enEnd:/Honour\s+where\s+honour\s+is\s+going\s+to\s+be\s+duly\s+appreciated/,
+    zhSkip:2, reader:'the-allingham-case-book'
+  },
+  {
+    id:'joke-over',
+    enFile:'novels/the-allingham-case-book.txt', zhFile:'novels-zh/玩笑终了.txt',
+    title:'Joke Over', sub:'from The Allingham Case-Book', zh:'玩笑终了',
+    year:'1969', scope:'全篇 · 21 段',
+    desc:'失踪案里最离奇的一桩：老板人间蒸发，壁炉边的大椅上却端端正正摆着他的衣帽、怀表、戒指、假牙与眼镜——人像是从第四维去吃午饭了。破案的钥匙是一只「矫形靴」，真相却叫人笑不出来。',
+    note:'自译全篇 · 收录于《The Allingham Case-Book》（1969）',
+    enStart:'It began with an ordinary', enEnd:/no\s+end\./,
+    zhSkip:2, reader:'the-allingham-case-book'
+  },
+  {
+    id:'lieabout',
+    enFile:'novels/the-allingham-case-book.txt', zhFile:'novels-zh/游手好闲者.txt',
+    title:'The Lieabout', sub:'from The Allingham Case-Book', zh:'游手好闲者',
+    year:'1969', scope:'全篇 · 66 段',
+    desc:'伦敦城的小院里，一位太太与栖身装箱的流浪汉结下茶饭之交。周六午后，他在隔壁空铺里大呼小叫「有具尸」，满街警察闻声围拢——街对面珠宝行的橱窗恰在此刻被砸开。一周后，一枚托帕斯胸针出现在她的信箱里。',
+    note:'自译全篇 · 收录于《The Allingham Case-Book》（1969）',
+    enStart:'I still have the brooch', enEnd:/What\s+should\s+Mrs\.\s+A\.\s+do\s+now\?/,
+    zhSkip:2, reader:'the-allingham-case-book'
+  },
+  {
+    id:'lying-in-state',
+    enFile:'novels/the-allingham-case-book.txt', zhFile:'novels-zh/停灵.txt',
+    title:'The Lying-in-State', sub:'from The Allingham Case-Book', zh:'停灵',
+    year:'1969', scope:'全篇 · 31 段',
+    desc:'「埃米尔亲王」抵英两小时猝逝，礼制命他佩全套国宝停灵——国宝却锁在保险库。两全之策应运而生：把遗体运进金库守灵。七个月后旅馆经理才从新闻社得知：那个国家，早已不存在了。篇名双关——停灵，亦是撒谎。',
+    note:'自译全篇 · 收录于《The Allingham Case-Book》（1969）',
+    enStart:'How the body of the young Emir', enEnd:/very\s+small\s+pieces\./,
+    zhSkip:2, reader:'the-allingham-case-book'
+  },
+  {
+    id:'mum-knows-best',
+    enFile:'novels/the-allingham-case-book.txt', zhFile:'novels-zh/老妈最灵.txt',
+    title:'Mum Knows Best', sub:'from The Allingham Case-Book', zh:'老妈最灵',
+    year:'1969', scope:'全篇 · 27 段',
+    desc:'雨夜救助的「戏剧学校学生」借走一串家传钻石项链后人间蒸发。线索追到利物浦街车站：十七个浑身「钻石」的舞蹈演员正待出国。行家尽数出城避暑，卢克带去了他唯一找得到的高人——他的老妈。',
+    note:'自译全篇 · 收录于《The Allingham Case-Book》（1969）',
+    enStart:'Mrs. Chubb\u2019s \u2018little room\u2019', enEnd:/he\s+added\s+briefly\.\s*\u201CSo\s+long\.\u201D/,
+    zhSkip:2, reader:'the-allingham-case-book'
+  },
+  {
+    id:'face-value',
+    enFile:'novels/the-allingham-case-book.txt', zhFile:'novels-zh/票面价值.txt',
+    title:'Face Value', sub:'from The Allingham Case-Book', zh:'票面价值',
+    year:'1969', scope:'全篇 · 53 段',
+    desc:'大班西奥爵士的天赋是「从不忘记一张脸」。部下之妻遇害那晚，他正是最后见过她的客人，一口咬定「她就是我在布拉宾顿认识的那位太太」。坎皮恩只带他去花店买了一次花，就点破了他另一项天赋。',
+    note:'自译全篇 · 收录于《The Allingham Case-Book》（1969）',
+    enStart:'I little thought,\u2019 wrote Sir Theo', enEnd:/picked\s+up\s+the\s+telephone\./,
+    zhSkip:2, reader:'the-allingham-case-book'
+  }
+];
+
+/* ===== 状态 ===== */
+let CUR=null;            // 当前书对象
+let PAIRS=[];            // [{en,zh}]
+let MODE='bi';
+const store={
+  get(k,d){try{const v=localStorage.getItem('alm-bi-'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('alm-bi-'+k,JSON.stringify(v))}catch(e){}}
+};
+let CFG=store.get('cfg',{fs:17,theme:'dark'});
+let PROG=store.get('prog',{});
+let ttsLang=store.get('ttslang','auto');
+
+/* ===== toast ===== */
+let toastTimer=null;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ===== 文本提取 ===== */
+function parasOf(text){
+  return text.split(/\n\s*\n/).map(p=>p.replace(/\s*\n\s*/g,' ').trim()).filter(p=>p.length>0);
+}
+function extractEN(text,book){
+  const i=text.indexOf(book.enStart);
+  if(i<0)return null;
+  const rest=text.slice(i);
+  const m=rest.match(book.enEnd);
+  const end=m?(m.index+m[0].length):rest.length;
+  let seg=rest.slice(0,end);
+  /* 去掉行首连载页眉（如 GHOSTS / AT HOME / THE SPOOR） */
+  seg=seg.replace(/^[A-Z][A-Z ]{3,}\s{2,}/,'');
+  return parasOf(seg);
+}
+function extractZH(text,book){
+  let ps=parasOf(text);
+  ps=ps.slice(book.zhSkip);
+  /* 去掉尾部〔…完〕标记 */
+  while(ps.length&&/^\[|^〔/.test(ps[ps.length-1]))ps.pop();
+  return ps;
+}
+function fmt(p){
+  const e=esc(p);
+  return e.replace(/_(.+?)_/g,'<em>$1</em>');
+}
+function isScene(p){return /^[\s\*＊]+$/.test(p)||/^\*\s*\*\s*\*/.test(p)||/^[＊]/.test(p)}
+
+/* ===== 渲染 ===== */
+function renderPick(){
+  const list=$('#pick-list');
+  list.innerHTML=BOOKS.map(b=>`
+    <a class="pcard" href="#${b.id}">
+      <span class="yr">${b.year}</span>
+      <div class="ten">${esc(b.title)}</div>
+      <div class="tzh">${esc(b.zh)}</div>
+      <div class="td">${esc(b.desc)}</div>
+      <div class="tf">
+        <span class="tag">${b.scope}</span>
+        <span class="tag">Bilingual</span>
+        <span class="go">开始阅读 →</span>
+      </div>
+    </a>`).join('');
+  $$('.pcard').forEach(c=>c.addEventListener('click',e=>{e.preventDefault();location.hash=c.getAttribute('href').slice(1)}));
+}
+
+function renderBook(book){
+  $('#content').innerHTML='<div class="loading">正在加载双语内容…</div>';
+  Promise.all([
+    fetch(book.enFile).then(r=>{if(!r.ok)throw new Error('英文原文加载失败');return r.text()}),
+    fetch(book.zhFile).then(r=>{if(!r.ok)throw new Error('中文译文加载失败');return r.text()})
+  ]).then(([enText,zhText])=>{
+    const en=extractEN(enText,book), zh=extractZH(zhText,book);
+    if(!en)throw new Error('未能在原文中定位选段');
+    if(en.length!==zh.length){
+      throw new Error('中英段落未对齐（英 '+en.length+' 段 / 中 '+zh.length+' 段）');
+    }
+    PAIRS=en.map((p,i)=>({en:p,zh:zh[i]}));
+    book.pairs=PAIRS;
+    paint(book);
+  }).catch(err=>{
+    $('#content').innerHTML='<div class="loading">加载失败：'+esc(err.message)+'</div>';
+  });
+}
+
+function paint(book){
+  $('#r-title').textContent=book.title;
+  $('#r-sub').textContent=book.sub;
+  $('#r-zh').textContent=book.zh;
+  $('#m-year').textContent=book.year;
+  $('#m-scope').textContent=book.scope;
+  $('#trans-note').innerHTML='<b>'+esc(book.note)+'</b> · 中文译文由本站译出，仅供学习交流';
+  $('#bt-title').textContent=book.title+' · '+book.zh;
+  const st=PROG[book.id];
+  $('#read-foot').innerHTML='<b>'+esc(book.title)+'</b> · 艾林翰书斋 双语阅读 · '
+    +'<a href="./index.html#book/'+book.reader+'">前往全书阅读器 →</a>'
+    +(st?'<br>上次读到第 '+(st.seg+1)+' 段（'+Math.round(st.pct*100)+'%）':'');
+  let html='';
+  PAIRS.forEach((p,i)=>{
+    if(isScene(p.en)||isScene(p.zh)){
+      html+='<div class="seg"><div class="scene">＊　＊　＊</div></div>';
+      return;
+    }
+    html+='<div class="seg" data-i="'+i+'"><div class="zh">'+fmt(p.zh)+'</div><div class="en" lang="en">'+fmt(p.en)+'</div></div>';
+  });
+  $('#content').innerHTML=html;
+  document.body.className='mode-'+MODE;
+  $('#modes').style.display='flex';
+  /* 恢复进度 */
+  if(st&&st.seg>0&&st.seg<PAIRS.length){
+    const el=$('#content .seg[data-i="'+st.seg+'"]');
+    if(el)setTimeout(()=>el.scrollIntoView({block:'start'}),60);
+  }
+  saveProg(0);
+}
+
+function saveProg(seg){
+  if(!CUR)return;
+  const doc=document.documentElement;
+  const pct=Math.min(1,window.scrollY/Math.max(1,doc.scrollHeight-window.innerHeight));
+  const old=PROG[CUR.id]||{seg:0,pct:0};
+  PROG[CUR.id]={seg:Math.max(old.seg,seg),pct:Math.max(old.pct,pct)};
+  store.set('prog',PROG);
+}
+
+/* ===== 模式切换 ===== */
+$$('#modes button').forEach(b=>b.addEventListener('click',()=>{
+  MODE=b.dataset.mode;
+  $$('#modes button').forEach(x=>x.classList.toggle('on',x===b));
+  document.body.className='mode-'+MODE+(tts.on?' tts-reading':'');
+  if(tts.on){tts.stopAll()}
+}));
+
+/* ===== TTS 引擎 ===== */
+const tts={
+  on:false,paused:false,idx:0,sents:[],els:[],
+  lang(){
+    if(ttsLang!=='auto')return ttsLang;
+    return MODE==='zh'?'zh':'en';
+  },
+  refresh(){
+    if(this.on)this.stopAll();
+    this.sents=[];this.els=[];
+    const zh=this.lang()==='zh';
+    $$('#content .seg').forEach(seg=>{
+      seg.querySelectorAll('.snt').forEach(s=>s.remove());
+      const target=zh?seg.querySelector('.zh'):seg.querySelector('.en');
+      if(!target)return;
+      const text=target.textContent;
+      const parts=zh?this.splitZh(text):this.splitEn(text);
+      target.innerHTML=parts.map(s=>'<span class="snt">'+esc(s)+'</span>').join(' ');
+      Array.from(target.querySelectorAll('.snt')).forEach(el=>{
+        this.sents.push(el.textContent);this.els.push(el);
+      });
+    });
+  },
+  splitEn(text){
+    const out=[];let buf='';
+    const n=text.length;
+    for(let i=0;i<n;i++){
+      const c=text[i];
+      buf+=c;
+      if('.!?…'.includes(c)){
+        let j=i+1;
+        while(j<n&&'"\u201D\u2019\')'.includes(text[j])){buf+=text[j];j++;i++}
+        const tail=buf.trim();
+        if(/\b(Mr|Mrs|Dr|St|Prof|Esq|No|vs|etc|Jr|Sr|Lt|Col|Gen|Capt|Rev|Hon|Fr|Mt)\.$/.test(tail)&&i+1<n&&text[i+1]!==' ')continue;
+        if(buf.trim().length>1)out.push(buf.trim());
+        buf='';
+      }
+    }
+    if(buf.trim())out.push(buf.trim());
+    return out.length?out:[text];
+  },
+  splitZh(text){
+    const out=[];let buf='';
+    for(const c of text){
+      buf+=c;
+      if('。！？；…'.includes(c)&&buf.trim().length>1){out.push(buf.trim());buf=''}
+    }
+    if(buf.trim())out.push(buf.trim());
+    return out.length?out:[text];
+  },
+  buildVoices(){
+    const sel=$('#tts-voice');
+    const zh=this.lang()==='zh';
+    const all=speechSynthesis.getVoices().filter(v=>v.lang&&(zh?v.lang.toLowerCase().startsWith('zh'):v.lang.toLowerCase().startsWith('en')));
+    if(!all.length){sel.innerHTML='<option value="">默认'+(zh?'中文':'英文')+'音色</option>';return}
+    sel.innerHTML=all.map(v=>'<option value="'+esc(v.name)+'">'+esc(v.name.replace(/^Microsoft |^Google /,''))+' · '+esc(v.lang)+'</option>').join('');
+    const pref=all.find(v=>zh?/zh[-_]CN/i.test(v.lang):/en[-_]GB/i.test(v.lang));
+    if(pref)sel.value=pref.name;
+  },
+  start(){
+    if(!('speechSynthesis' in window)){toast('此浏览器不支持语音合成');return}
+    this.refresh();
+    this.buildVoices();
+    if(!this.sents.length){toast(this.lang()==='zh'?'无中文可朗读（当前模式无译文）':'无英文可朗读');return}
+    this.on=true;this.paused=false;this.idx=0;
+    document.body.classList.add('tts-reading');
+    $('#ttsbar').classList.add('show');
+    $('#btn-tts').classList.add('on');
+    this.speak();
+  },
+  speak(){
+    if(!this.on||this.idx>=this.sents.length){
+      if(this.idx>=this.sents.length&&this.on){toast('选段朗读完毕 ✓');this.stopAll()}
+      return
+    }
+    this.els.forEach(e=>e.classList.remove('tts-on'));
+    const el=this.els[this.idx];
+    el.classList.add('tts-on');
+    el.scrollIntoView({block:'center',behavior:'smooth'});
+    $('#tts-prog').textContent=(this.idx+1)+'/'+this.sents.length;
+    const u=new SpeechSynthesisUtterance(this.sents[this.idx]);
+    const zh=this.lang()==='zh';
+    u.lang=zh?'zh-CN':'en-GB';
+    u.rate=parseFloat($('#tts-rate').value);
+    const v=speechSynthesis.getVoices().find(x=>x.name===$('#tts-voice').value&&x.lang.toLowerCase().startsWith(zh?'zh':'en'));
+    if(v)u.voice=v;
+    u.onend=()=>{if(this.on&&!this.paused){this.idx++;this.speak()}};
+    u.onerror=()=>{if(this.on&&!this.paused){this.idx++;setTimeout(()=>this.speak(),120)}};
+    speechSynthesis.speak(u);
+  },
+  pause(){this.paused=true;speechSynthesis.cancel();$('#tts-play').textContent='▶'},
+  resume(){this.paused=false;$('#tts-play').textContent='⏸';this.speak()},
+  stopAll(){
+    this.on=false;this.paused=false;this.idx=0;
+    speechSynthesis.cancel();
+    document.body.classList.remove('tts-reading');
+    $('#ttsbar').classList.remove('show');
+    $('#btn-tts').classList.remove('on');
+    this.els.forEach(e=>e.classList.remove('tts-on'));
+    $('#tts-play').textContent='▶';
+  },
+  jump(d){
+    speechSynthesis.cancel();
+    this.idx=Math.max(0,Math.min(this.sents.length-1,this.idx+d));
+    this.paused=false;
+    if(this.on)this.speak();
+  }
+};
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged=()=>tts.buildVoices();
+}
+
+/* ===== 配置 ===== */
+function applyCfg(){
+  document.documentElement.dataset.theme=CFG.theme;
+  document.documentElement.style.setProperty('--fs',CFG.fs+'px');
+  document.documentElement.style.setProperty('--fs-en',(CFG.fs-1)+'px');
+  $$('#fs-row .chip').forEach(c=>c.classList.toggle('on',parseInt(c.dataset.fs,10)===CFG.fs));
+  $$('#th-row .chip').forEach(c=>c.classList.toggle('on',c.dataset.theme===CFG.theme));
+  store.set('cfg',CFG);
+}
+
+/* ===== 事件 ===== */
+$('#btn-tts').addEventListener('click',()=>{
+  if(tts.on&&!tts.paused)tts.pause();
+  else if(tts.on&&tts.paused)tts.resume();
+  else tts.start();
+  $('#tts-play').textContent=(tts.on&&!tts.paused)?'⏸':'▶';
+});
+$('#tts-play').addEventListener('click',()=>{
+  if(!tts.on){tts.start();$('#tts-play').textContent='⏸';return}
+  if(tts.paused)tts.resume();else tts.pause();
+});
+$('#tts-stop').addEventListener('click',()=>tts.stopAll());
+$('#tts-prev').addEventListener('click',()=>tts.jump(-1));
+$('#tts-next').addEventListener('click',()=>tts.jump(1));
+$('#tts-lang').addEventListener('change',e=>{
+  ttsLang=e.target.value;store.set('ttslang',ttsLang);
+  if(tts.on){tts.stopAll();setTimeout(()=>tts.start(),80)}
+});
+$('#tts-rate').addEventListener('change',()=>{
+  if(tts.on&&!tts.paused){speechSynthesis.cancel();setTimeout(()=>tts.speak(),80)}
+});
+$('#tts-voice').addEventListener('change',()=>{
+  if(tts.on&&!tts.paused){speechSynthesis.cancel();setTimeout(()=>tts.speak(),80)}
+});
+$('#tts-lang').value=ttsLang;
+
+$('#btn-font').addEventListener('click',e=>{e.stopPropagation();$('#fontpanel').classList.toggle('open')});
+document.addEventListener('click',e=>{
+  const fp=$('#fontpanel');
+  if(fp.classList.contains('open')&&!fp.contains(e.target)&&!$('#btn-font').contains(e.target))fp.classList.remove('open');
+});
+$$('#fs-row .chip').forEach(c=>c.addEventListener('click',()=>{CFG.fs=parseInt(c.dataset.fs,10);applyCfg()}));
+$$('#th-row .chip').forEach(c=>c.addEventListener('click',()=>{CFG.theme=c.dataset.theme;applyCfg()}));
+$('#btn-top').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='SELECT'||e.target.tagName==='INPUT')return;
+  if(e.key==='Escape'){if(tts.on)tts.stopAll();$('#fontpanel').classList.remove('open')}
+  if(e.key===' '&&tts.on){e.preventDefault();if(tts.paused)tts.resume();else tts.pause()}
+});
+
+/* 进度保存（滚动节流） */
+let progTimer=null;
+window.addEventListener('scroll',()=>{
+  if(!CUR||!PAIRS.length)return;
+  clearTimeout(progTimer);
+  progTimer=setTimeout(()=>{
+    const segs=$$('#content .seg[data-i]');
+    let cur=0;
+    for(const s of segs){if(s.getBoundingClientRect().top<window.innerHeight*0.4)cur=parseInt(s.dataset.i,10);else break}
+    saveProg(cur);
+  },400);
+},{passive:true});
+
+/* ===== 路由 ===== */
+function route(){
+  const id=location.hash.replace(/^#/,'');
+  const book=BOOKS.find(b=>b.id===id);
+  if(book){
+    CUR=book;
+    $('#view-pick').style.display='none';
+    $('#view-read').style.display='block';
+    $('#modes').style.display='flex';
+    renderBook(book);
+  }else{
+    CUR=null;PAIRS=[];
+    tts.stopAll();
+    $('#view-read').style.display='none';
+    $('#view-pick').style.display='block';
+    $('#modes').style.display='none';
+    $('#bt-title').textContent='双语阅读 · 艾林翰书斋';
+    renderPick();
+  }
+}
+window.addEventListener('hashchange',route);
+
+/* ===== 启动 ===== */
+applyCfg();
+route();
+})();
+</script>
+</body>
+</html>
