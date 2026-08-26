@@ -1,0 +1,26 @@
+{
+  "name": "艾林翰书斋 · Margery Allingham Reader",
+  "short_name": "艾林翰书斋",
+  "description": "玛格丽·艾林翰公版小说全收录阅读器 — 28 部作品、章节导航、离线阅读、语音朗读",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#14231b",
+  "theme_color": "#14231b",
+  "orientation": "any",
+  "lang": "zh-CN",
+  "categories": ["books", "education"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
