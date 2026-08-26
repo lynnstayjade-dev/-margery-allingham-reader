@@ -1,0 +1,17 @@
+# 分析与构建中间产物（不部署）
+_*.txt
+_*.md
+_*.html
+analyze-*.ps1
+detect-chapters.ps1
+download-books.ps1
+make-icons.ps1
+verify.mjs
+verify-bilingual.mjs
+verify-final.mjs
+_check.mjs
+
+# 未入库文件
+# _test.txt 为下载测试残留；crime-and-mr-campion 为三部曲合集（内容与已收录单行本重复，书目未引用）
+novels/_test.txt
+novels/crime-and-mr-campion.txt
