@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="28" fill="#14231b"/>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="none" stroke="#d9a862" stroke-width="2" opacity="0.55"/>
+  <path d="M38 92V36h25c13.6 0 22.4 8 22.4 20.4 0 9.6-5.2 16.4-14 19.2l16 16.4H73.6L59.6 76H45v16H38zm7-22.6h17.2c6.8 0 10.8-3.6 10.8-10s-4-10-10.8-10H45v20z" fill="#d9a862"/>
+  <circle cx="97" cy="34" r="9" fill="none" stroke="#7fae8e" stroke-width="4"/>
+  <text x="64" y="118" font-family="Georgia, serif" font-size="13" fill="#8a8474" text-anchor="middle" letter-spacing="3">ALLINGHAM</text>
+</svg>
