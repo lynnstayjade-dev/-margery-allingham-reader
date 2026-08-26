@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="艾林翰书斋 · 真人听书 — LibriVox 免费有声书《黑达德利庄园的罪行》《神秘的一英里》全本在线播放">
+<meta name="theme-color" content="#14231b">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<title>真人听书 · 艾林翰书斋</title>
+<style>
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Bold.ttf') format('truetype');font-weight:700;font-display:swap}
+@font-face{font-family:'CrimsonPro';src:url('./_shared/fonts/CrimsonPro-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Lora';src:url('./_shared/fonts/Lora-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'JBMono';src:url('./_shared/fonts/JetBrainsMono-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+
+:root{
+  color-scheme:dark;
+  --ink:#e9e4d6; --ink-dim:#b9b2a0; --ink-faint:#8a8474;
+  --bg:#14231b; --bg2:#0e1a14; --bg3:#1b2e24; --line:#2d4436;
+  --gold:#d9a862; --gold-soft:#b98c4f; --amber:#e8c07a;
+  --accent:#7fae8e; --danger:#c98163;
+  --serif:'CrimsonPro',Georgia,serif; --body:'Lora',Georgia,serif; --mono:'JBMono',Consolas,monospace;
+}
+html[data-theme=paper]{color-scheme:light;--ink:#332f26;--ink-dim:#5b554a;--ink-faint:#857d6d;--bg:#f4eddc;--bg2:#ece2ca;--bg3:#efe7d4;--line:#d8cbaa;--gold:#8a6420;--gold-soft:#a5792f;--amber:#7d5a1a;--accent:#48705a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--amber)}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+::selection{background:var(--gold);color:#14231b}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;display:flex;align-items:center;gap:14px;padding:0 20px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar .back{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--accent);text-decoration:none;white-space:nowrap}
+.topbar .back:hover{color:var(--amber)}
+.topbar .bt{font-family:var(--serif);font-weight:700;font-size:18px;letter-spacing:.06em;color:var(--amber)}
+
+.wrap{max-width:920px;margin:0 auto;padding:96px 22px 80px}
+.hero{text-align:center;margin-bottom:34px}
+.hero .era{font-family:var(--mono);font-size:10.5px;letter-spacing:.34em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-family:var(--serif);font-size:clamp(32px,5vw,50px);font-weight:700;line-height:1.15}
+.hero h1 em{color:var(--amber);font-style:italic}
+.hero .cn{font-size:15px;color:var(--ink-dim);margin-top:12px;letter-spacing:.3em;text-indent:.3em}
+.hero .sub{max-width:640px;margin:16px auto 0;font-size:14px;line-height:1.95;color:var(--ink-dim)}
+
+.note{margin:28px auto;max-width:760px;border:1px dashed var(--line);border-radius:12px;padding:15px 20px;font-size:13px;line-height:1.9;color:var(--ink-faint);background:var(--bg3)}
+.note b{color:var(--gold)}
+
+.sect{margin-top:52px}
+.sect-title{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.sect-title .rn{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--gold);font-style:italic}
+.sect-title .rt{font-family:var(--serif);font-size:20px;font-weight:700}
+.sect-title .rd{font-size:12.5px;color:var(--ink-faint);font-family:var(--mono);letter-spacing:.08em}
+.sect-title .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+
+/* 书卡 */
+.book{border:1px solid var(--line);border-radius:16px;background:var(--bg3);overflow:hidden;margin-bottom:26px}
+.book.open{border-color:var(--gold-soft)}
+.bhead{display:flex;align-items:center;gap:16px;padding:18px 22px;cursor:pointer;user-select:none}
+.bhead:hover{background:color-mix(in srgb,var(--bg2) 50%,transparent)}
+.bnum{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--gold-soft);min-width:44px;text-align:center;font-style:italic}
+.binfo{flex:1;min-width:0}
+.binfo .ten{font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.3;color:var(--ink)}
+.binfo .tzh{font-family:var(--serif);font-size:14px;color:var(--amber);letter-spacing:.1em;margin-top:2px}
+.binfo .td{font-size:13px;line-height:1.75;color:var(--ink-dim);margin-top:8px}
+.bmeta{text-align:right;flex:none}
+.bmeta .nar{font-size:12.5px;color:var(--accent);font-weight:700}
+.bmeta .dur{display:block;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.1em;margin-top:4px}
+.play{width:46px;height:46px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;flex:none;transition:.2s}
+.play::after{content:'';display:block;width:0;height:0;border-left:13px solid var(--gold);border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px;transition:.2s}
+.play:hover,.book.open .play{background:var(--gold)}
+.play:hover::after,.book.open .play::after{border-left-color:#14231b}
+
+/* 播放器 */
+.player{display:none;border-top:1px solid var(--line);background:var(--bg2);padding:16px 22px 18px}
+.book.open .player{display:block}
+.player .now{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.player .now .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;color:var(--gold-soft);text-transform:uppercase}
+.player .now .tit{font-family:var(--serif);font-size:16.5px;font-weight:700;color:var(--amber)}
+.player .now .sp{flex:1}
+.player .now .time{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+audio{width:100%;height:40px;margin-bottom:12px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;max-height:300px;overflow-y:auto;padding-right:4px}
+.ch{display:flex;align-items:baseline;gap:9px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--ink-dim);cursor:pointer;transition:.15s;background:var(--bg)}
+.ch:hover{color:var(--amber);border-color:var(--gold-soft)}
+.ch.cur{background:var(--gold);color:#14231b;font-weight:700;border-color:var(--gold)}
+.ch .cn{font-family:var(--mono);font-size:10px;color:var(--gold-soft);min-width:20px}
+.ch.cur .cn{color:#14231b}
+.ch .cd{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);flex:none}
+.ch.cur .cd{color:#3d2f14}
+.dl{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:8px 16px;background:var(--bg3);border:1px solid var(--line);border-radius:9px;font-size:12.5px;color:var(--ink-dim);text-decoration:none;transition:.15s}
+.dl:hover{color:var(--amber);border-color:var(--gold-soft)}
+
+/* 商业有声书 */
+.com-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.com{border:1px solid var(--line);border-radius:13px;padding:18px 20px;background:var(--bg3)}
+.com .ct{font-family:var(--serif);font-size:17.5px;font-weight:700;color:var(--ink);line-height:1.35}
+.com .cz{font-size:13px;color:var(--amber);margin:3px 0 10px;letter-spacing:.06em}
+.com .cm{font-size:12.8px;line-height:1.85;color:var(--ink-dim)}
+.com .cm b{color:var(--ink)}
+.com .cl{display:inline-block;margin-top:11px;font-size:12px;color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent);padding-bottom:1px}
+.com .cl:hover{color:var(--amber)}
+
+.tts-box{border:1px solid var(--line);border-radius:16px;background:var(--bg3);padding:22px 26px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.tts-box .ti{flex:none;display:flex;color:var(--amber)}
+.tts-box .tx{flex:1;min-width:240px}
+.tts-box .tt{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--amber);margin-bottom:6px}
+.tts-box .td2{font-size:13.5px;line-height:1.85;color:var(--ink-dim)}
+.tts-box .go{display:inline-flex;margin-top:10px;padding:9px 18px;background:var(--gold);color:#14231b;font-weight:700;font-size:13px;border-radius:9px;text-decoration:none;letter-spacing:.04em}
+.tts-box .go:hover{background:var(--amber)}
+
+.foot{margin-top:64px;padding-top:26px;border-top:1px solid var(--line);font-size:12.5px;line-height:2.1;color:var(--ink-faint);text-align:center}
+.foot b{color:var(--ink-dim)}
+
+@media(max-width:700px){
+  .wrap{padding:80px 14px 70px}
+  .bmeta{display:none}
+  .bnum{min-width:30px;font-size:24px}
+  .plist{max-height:240px}
+  .binfo .ten{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="./index.html">← 书斋</a>
+  <span class="bt">真人听书 · 艾林翰书斋</span>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="era">Audiobooks · 真人朗读</div>
+    <h1>英文<em>有声书</em></h1>
+    <div class="cn">两部全本 · 五十七章 · 十六小时</div>
+    <p class="sub">LibriVox 志愿者真人录制的完整有声书，逐章在线播放、免费下载。坎皮恩系列开卷两作——《黑达德利庄园的罪行》与《神秘的一英里》。</p>
+  </div>
+
+  <div class="note">
+    <b>使用说明：</b>点击任意书籍展开播放器，再点章节名即换章连续收听；收听进度自动记忆（仅存本机），再次展开自动定位到上次听到的位置。音频直连 archive.org 公版服务器，加载稍慢请耐心等待 2–3 秒。全部朗读为真人录制，非 AI 合成；其余 26 部作品可用书斋内置的<b>TTS 英式朗读</b>边看边听。
+  </div>
+
+  <div class="sect">
+    <div class="sect-title"><span class="rn">I</span><span class="rt">LibriVox 免费全本</span><span class="rule"></span></div>
+    <div id="books"></div>
+  </div>
+
+  <div class="sect">
+    <div class="sect-title"><span class="rn">II</span><span class="rt">商业录音精选</span><span class="rd">付费平台 · 专业演员</span><span class="rule"></span></div>
+    <div class="com-grid">
+      <div class="com">
+        <div class="ct">The Tiger in the Smoke</div>
+        <div class="cz">烟中之虎 · 1952</div>
+        <div class="cm"><b>David Thorpe</b> 朗读，全本 10 小时 1 分。艾林翰巅峰之作的 Audible 官方全本录音。</div>
+        <a class="cl" href="https://www.audible.com/pd/The-Tiger-in-the-Smoke-Audiobook/B017GCV6NE" target="_blank" rel="noopener">Audible 试听 →</a>
+      </div>
+      <div class="com">
+        <div class="ct">Mystery Mile</div>
+        <div class="cz">神秘的一英里 · 1930</div>
+        <div class="cm"><b>Francis Matthews</b>（勒卡雷剧版主演）朗读，全本 8 小时 1 分。Naxos AudioBooks 出品。</div>
+        <a class="cl" href="https://www.naxosaudiobooks.com/mystery-mile/" target="_blank" rel="noopener">Naxos 试听 →</a>
+      </div>
+      <div class="com">
+        <div class="ct">The Oaken Heart</div>
+        <div class="cz">橡木之心 · 1941</div>
+        <div class="cm"><b>Georgina Sutton</b> 朗读，全本 9 小时 24 分。艾林翰唯一的非虚构之作——战时村庄实录。</div>
+        <a class="cl" href="https://www.naxosaudiobooks.com/the-oaken-heart/" target="_blank" rel="noopener">Naxos 试听 →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect">
+    <div class="sect-title"><span class="rn">III</span><span class="rt">全书 TTS 朗读</span><span class="rd">28 部作品 · 英式音色优先</span><span class="rule"></span></div>
+    <div class="tts-box">
+      <div class="ti"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9.4 9.4 0 0 1 0 13"/></svg></div>
+      <div class="tx">
+        <div class="tt">机器朗读 · 边看边听</div>
+        <div class="td2">28 部小说全部支持逐句高亮朗读：自动优先选择英式音色，可调语速、可跳句。深夜通勤、闭目养神皆宜。</div>
+        <a class="go" href="./index.html">返回书斋开始朗读 →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <b>艾林翰书斋 · Margery Allingham Reader</b><br>
+    有声书来源：LibriVox 公版录音（朗读者 Terrance Callan）· archive.org 托管 · 转载遵循公有领域许可<br>
+    《黑达德利庄园的罪行》(1929) 与《神秘的一英里》(1930) 原文收录于书斋「初试啼声」时期
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const BOOKS=[
+  {
+    num:'01', en:'The Crime at Black Dudley', zh:'黑达德利庄园的罪行',
+    year:'1929', narrator:'Terrance Callan', dur:'7h 51m · 29 章',
+    desc:'坎皮恩的登场之作：乡间宅邸的周末聚会演变成命案，蒙面匪帮挟持满屋宾客。荒诞喜剧与冷峻惊悚在此熔于一炉。',
+    base:'https://www.archive.org/download/crimeatblackdudley_2504_librivox/blackdudley_',
+    page:'https://librivox.org/the-crime-at-black-dudley-by-margery-allingham/',
+    chapters:[
+      ['Candle-Light','21:01'],['The Ritual of the Dagger','18:13'],['In the Garage','13:57'],['Murder','19:18'],['The Mask','6:58'],
+      ['Mr. Campion Brings the House Down','9:37'],['Five O\u2019Clock in the Morning','12:33'],['Open Warfare','15:32'],['Chris Kennedy Scores a Try Only','16:38'],['The Impetuous Mr. Abbershaw','10:33'],
+      ['One Explanation','20:27'],['\u201CFurthermore\u2026\u201D said Mr. Campion','13:05'],['Abbershaw Sees Red','11:25'],['Abbershaw Gets His Interview','12:49'],['Doctor Abbershaw\u2019s Deductions','20:25'],
+      ['The Militant Mrs. Meade','20:18'],['In the Evening','19:18'],['Mr. Kennedy\u2019s Council','16:29'],['Mr. Campion\u2019s Conjuring Trick','16:34'],['The Round-Up','25:57'],
+      ['The Point of View of Benjamin Dawlish','13:09'],['The Darkest Hour','15:43'],['An Error in Taste','14:42'],['The Last of Black Dudley','17:53'],['Mr. Watt Explains','15:22'],
+      ['\u201CCherchez la Femme\u201D','16:59'],['A Journey by Night','14:01'],['Should a Doctor Tell?','17:35'],['The Last Chapter','24:32']
+    ]
+  },
+  {
+    num:'02', en:'Mystery Mile', zh:'神秘的一英里',
+    year:'1930', narrator:'Terrance Callan', dur:'8h 02m · 28 章',
+    desc:'坎皮恩首次独挑大梁：美国法官携死亡威胁远渡重洋，萨福克海岸的孤村「神秘的一英里」里，传说与阴谋一同退潮。',
+    base:'https://www.archive.org/download/mysterymile_2602_librivox/mysterymile_',
+    page:'https://librivox.org/mystery-mile-by-margery-allingham/',
+    chapters:[
+      ['Among Those Present','26:09'],['The Simister Legend','19:39'],['Mystery Mile','21:37'],['The Lord of the Manor','13:37'],['The Seven Whistlers','6:21'],
+      ['The Man in Dress Clothes','17:07'],['By the Light of the Hurricane','17:00'],['The Envelope','15:37'],['\u201CIn Event of Trouble\u2026\u201D','12:56'],['The Insanity of Swithin Cush','11:16'],
+      ['The Maze','14:53'],['The Dead End','14:36'],['The Blue Suitcase','20:30'],['Campion to Move','20:33'],['The Exuberance of Mr. Kettle','13:30'],
+      ['The Wheels Go Round','12:46'],['\u201CGent on a Bike\u201D','13:58'],['The Unspeakable Thos','15:54'],['The Tradesmen\u2019s Entrance','17:47'],['The Profession','12:59'],
+      ['Mr. Campion\u2019s Nerve','13:11'],['The Rough-house','13:24'],['And How!','24:32'],['\u201COnce More Into the Breach, Dear Friends\u201D','16:10'],['The Bait','19:22'],
+      ['One End of the String','23:55'],['Late Night Finale','34:50'],['Moral','18:35']
+    ]
+  }
+];
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+const PKEY='alm-ab-prog';
+let prog={};
+try{prog=JSON.parse(localStorage.getItem(PKEY))||{}}catch(e){}
+function mark(num,ch,t){prog[num]={ch:ch,t:t||0};try{localStorage.setItem(PKEY,JSON.stringify(prog))}catch(e){}}
+
+const box=document.getElementById('books');
+BOOKS.forEach((b,bi)=>{
+  const el=document.createElement('div');
+  el.className='book';
+  const chHtml=b.chapters.map((c,i)=>{
+    const nn=String(i+1).padStart(2,'0');
+    return '<div class="ch" data-n="'+nn+'"><span class="cn">'+(i+1)+'</span><span class="ct2">'+esc(c[0])+'</span><span class="cd">'+c[1]+'</span></div>';
+  }).join('');
+  el.innerHTML=
+    '<div class="bhead">'+
+      '<div class="bnum">'+b.num+'</div>'+
+      '<div class="binfo">'+
+        '<div class="ten">'+esc(b.en)+'</div>'+
+        '<div class="tzh">'+esc(b.zh)+' · '+b.year+'</div>'+
+        '<div class="td">'+esc(b.desc)+'</div>'+
+      '</div>'+
+      '<div class="bmeta"><div class="nar">朗读者 '+esc(b.narrator)+'</div><span class="dur">'+b.dur+'</span></div>'+
+      '<button class="play" aria-label="展开播放"></button>'+
+    '</div>'+
+    '<div class="player">'+
+      '<div class="now"><span class="lab">正在播放</span><span class="tit" id="now-'+bi+'">—</span><span class="sp"></span><span class="time" id="time-'+bi+'"></span></div>'+
+      '<audio id="au-'+bi+'" preload="none" controls></audio>'+
+      '<div class="plist">'+chHtml+'</div>'+
+      '<a class="dl" href="'+b.page+'" target="_blank" rel="noopener">在 LibriVox 打开本书页面 →</a>'+
+    '</div>';
+  box.appendChild(el);
+
+  const au=el.querySelector('audio');
+  const now=el.querySelector('#now-'+bi);
+  const time=el.querySelector('#time-'+bi);
+  let cur=0;
+  let lastSave=0;
+
+  function play(n){
+    cur=n;
+    const nn=String(n).padStart(2,'0');
+    au.src=b.base+nn+'_allingham_64kb.mp3';
+    au.play().catch(()=>{});
+    now.textContent='第 '+n+' 章 · '+b.chapters[n-1][0];
+    el.querySelectorAll('.ch').forEach(c=>c.classList.toggle('cur',c.dataset.n===nn));
+    mark(b.num,n,0);
+  }
+  el.querySelector('.bhead').addEventListener('click',()=>{
+    const wasOpen=el.classList.contains('open');
+    document.querySelectorAll('.book').forEach(x=>{x.classList.remove('open');x.querySelector('audio').pause()});
+    if(!wasOpen){
+      el.classList.add('open');
+      if(au.src)return;
+      const p=prog[b.num];
+      if(p&&p.ch>=1&&p.ch<=b.chapters.length){
+        cur=p.ch;
+        au.preload='metadata';
+        au.src=b.base+String(p.ch).padStart(2,'0')+'_allingham_64kb.mp3';
+        au.addEventListener('loadedmetadata',function once(){
+          if(p.t&&isFinite(p.t)&&p.t<au.duration)au.currentTime=p.t;
+          au.removeEventListener('loadedmetadata',once);
+        });
+        now.textContent='续听第 '+p.ch+' 章 · '+b.chapters[p.ch-1][0];
+        el.querySelectorAll('.ch').forEach(c=>c.classList.toggle('cur',c.dataset.n===String(p.ch).padStart(2,'0')));
+      }else{
+        play(1);
+      }
+    }
+  });
+  el.querySelectorAll('.ch').forEach(c=>c.addEventListener('click',()=>play(parseInt(c.dataset.n,10))));
+  au.addEventListener('ended',()=>{
+    if(cur<b.chapters.length)play(cur+1);
+  });
+  au.addEventListener('timeupdate',()=>{
+    const f=t=>{const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+String(s).padStart(2,'0')};
+    time.textContent=f(au.currentTime)+' / '+(au.duration&&!isNaN(au.duration)?f(au.duration):b.chapters[cur-1][1]);
+    if(au.currentTime-lastSave>5){lastSave=au.currentTime;mark(b.num,cur,au.currentTime)}
+  });
+  au.addEventListener('pause',()=>{if(au.currentTime>0)mark(b.num,cur,au.currentTime)});
+});
+})();
+</script>
+</body>
+</html>
